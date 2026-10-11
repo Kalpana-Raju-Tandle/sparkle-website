@@ -1,0 +1,470 @@
+[
+ {
+  "file": "j-site-marking.jpg",
+  "title": "Site marking & layout",
+  "category": "journey",
+  "stage": 1,
+  "description": "",
+  "w": 1280,
+  "h": 960
+ },
+ {
+  "file": "j-excavation.jpg",
+  "title": "Excavation to hard strata",
+  "category": "journey",
+  "stage": 2,
+  "description": "",
+  "w": 1200,
+  "h": 1600
+ },
+ {
+  "file": "j-footing-steel.jpg",
+  "title": "Footing reinforcement",
+  "category": "journey",
+  "stage": 3,
+  "description": "",
+  "w": 960,
+  "h": 1280
+ },
+ {
+  "file": "j-footing-concrete.jpg",
+  "title": "Footing concrete cast",
+  "category": "journey",
+  "stage": 3,
+  "description": "",
+  "w": 1280,
+  "h": 960
+ },
+ {
+  "file": "j-plinth-palms.jpg",
+  "title": "Plinth level, ready for columns",
+  "category": "journey",
+  "stage": 4,
+  "description": "",
+  "w": 1280,
+  "h": 573
+ },
+ {
+  "file": "j-columns.jpg",
+  "title": "Column starters rising",
+  "category": "journey",
+  "stage": 4,
+  "description": "",
+  "w": 1600,
+  "h": 720
+ },
+ {
+  "file": "j-plinth-beam.jpg",
+  "title": "Plinth beam steel",
+  "category": "journey",
+  "stage": 4,
+  "description": "",
+  "w": 722,
+  "h": 405
+ },
+ {
+  "file": "j-plinth-blockwork.jpg",
+  "title": "Plinth blockwork",
+  "category": "journey",
+  "stage": 4,
+  "description": "",
+  "w": 1280,
+  "h": 960
+ },
+ {
+  "file": "j-floor-concrete.jpg",
+  "title": "Floor concrete finishing",
+  "category": "journey",
+  "stage": 4,
+  "description": "",
+  "w": 1280,
+  "h": 960
+ },
+ {
+  "file": "j-walls-columns.jpg",
+  "title": "Walls & columns taking shape",
+  "category": "journey",
+  "stage": 5,
+  "description": "",
+  "w": 1280,
+  "h": 960
+ },
+ {
+  "file": "j-walls-interior.jpg",
+  "title": "Blockwork walls, interior",
+  "category": "journey",
+  "stage": 5,
+  "description": "",
+  "w": 1280,
+  "h": 576
+ },
+ {
+  "file": "j-structure-stair.jpg",
+  "title": "Structure with staircase",
+  "category": "journey",
+  "stage": 5,
+  "description": "",
+  "w": 1280,
+  "h": 721
+ },
+ {
+  "file": "j-brick-duplex.jpg",
+  "title": "Brick masonry, upper floors",
+  "category": "journey",
+  "stage": 5,
+  "description": "",
+  "w": 1280,
+  "h": 576
+ },
+ {
+  "file": "j-stair-soffit.jpg",
+  "title": "Staircase & niche detailing",
+  "category": "journey",
+  "stage": 5,
+  "description": "",
+  "w": 1280,
+  "h": 738
+ },
+ {
+  "file": "j-plaster-triplex.jpg",
+  "title": "Plastering underway",
+  "category": "journey",
+  "stage": 6,
+  "description": "",
+  "w": 574,
+  "h": 1280
+ },
+ {
+  "file": "j-plaster-exterior.jpg",
+  "title": "Exterior plaster & texture coat",
+  "category": "journey",
+  "stage": 6,
+  "description": "",
+  "w": 1024,
+  "h": 1280
+ },
+ {
+  "file": "j-roof-finish.jpg",
+  "title": "Roof & facade finishing",
+  "category": "journey",
+  "stage": 7,
+  "description": "",
+  "w": 1600,
+  "h": 902
+ },
+ {
+  "file": "j-near-complete.jpg",
+  "title": "Near completion",
+  "category": "journey",
+  "stage": 7,
+  "description": "",
+  "w": 1280,
+  "h": 721
+ },
+ {
+  "file": "j-glass-railing.jpg",
+  "title": "Glass railing & cladding",
+  "category": "journey",
+  "stage": 7,
+  "description": "",
+  "w": 1200,
+  "h": 1600
+ },
+ {
+  "file": "j-griha-pravesh.jpg",
+  "title": "Griha pravesh day",
+  "category": "journey",
+  "stage": 8,
+  "description": "",
+  "w": 575,
+  "h": 1280
+ },
+ {
+  "file": "j-night-handover.jpg",
+  "title": "Handed over, lit up at night",
+  "category": "journey",
+  "stage": 8,
+  "description": "",
+  "w": 1200,
+  "h": 1600
+ },
+ {
+  "file": "c-01.jpg",
+  "title": "Modern White Duplex",
+  "category": "completed",
+  "stage": 0,
+  "description": "",
+  "w": 1280,
+  "h": 573
+ },
+ {
+  "file": "c-04.jpg",
+  "title": "Statement-Pillar Residence",
+  "category": "completed",
+  "stage": 0,
+  "description": "",
+  "w": 1600,
+  "h": 1245
+ },
+ {
+  "file": "c-08.jpg",
+  "title": "Contemporary Vertical Home",
+  "category": "completed",
+  "stage": 0,
+  "description": "",
+  "w": 573,
+  "h": 1280
+ },
+ {
+  "file": "c-10.jpg",
+  "title": "Street-Front Duplex",
+  "category": "completed",
+  "stage": 0,
+  "description": "",
+  "w": 1280,
+  "h": 574
+ },
+ {
+  "file": "c-11.jpg",
+  "title": "Grey & White Duplex",
+  "category": "completed",
+  "stage": 0,
+  "description": "",
+  "w": 1280,
+  "h": 920
+ },
+ {
+  "file": "c-13.jpg",
+  "title": "Blue-Sky Corner Duplex",
+  "category": "completed",
+  "stage": 0,
+  "description": "",
+  "w": 1280,
+  "h": 576
+ },
+ {
+  "file": "c-14.jpg",
+  "title": "Ethnic Carved-Door Home",
+  "category": "completed",
+  "stage": 0,
+  "description": "",
+  "w": 1600,
+  "h": 1016
+ },
+ {
+  "file": "c-20.jpg",
+  "title": "Red & Grey Facade Home",
+  "category": "completed",
+  "stage": 0,
+  "description": "",
+  "w": 573,
+  "h": 1280
+ },
+ {
+  "file": "c-21.jpg",
+  "title": "Compact Elevation Home",
+  "category": "completed",
+  "stage": 0,
+  "description": "",
+  "w": 1280,
+  "h": 576
+ },
+ {
+  "file": "c-22.jpg",
+  "title": "Colour-Accent Residence",
+  "category": "completed",
+  "stage": 0,
+  "description": "",
+  "w": 1600,
+  "h": 1412
+ },
+ {
+  "file": "c-24.jpg",
+  "title": "Open-Terrace Residence",
+  "category": "completed",
+  "stage": 0,
+  "description": "",
+  "w": 1280,
+  "h": 576
+ },
+ {
+  "file": "c-25.jpg",
+  "title": "Sloped-Roof Family Home",
+  "category": "completed",
+  "stage": 0,
+  "description": "",
+  "w": 1280,
+  "h": 573
+ },
+ {
+  "file": "c-26.jpg",
+  "title": "Yellow-Accent Residence",
+  "category": "completed",
+  "stage": 0,
+  "description": "",
+  "w": 1280,
+  "h": 573
+ },
+ {
+  "file": "d-00.jpg",
+  "title": "3D Elevation 01",
+  "category": "designs",
+  "stage": 0,
+  "description": "",
+  "w": 1433,
+  "h": 1077
+ },
+ {
+  "file": "d-01.jpg",
+  "title": "3D Elevation 02",
+  "category": "designs",
+  "stage": 0,
+  "description": "",
+  "w": 1600,
+  "h": 900
+ },
+ {
+  "file": "d-02.jpg",
+  "title": "3D Elevation 03",
+  "category": "designs",
+  "stage": 0,
+  "description": "",
+  "w": 1120,
+  "h": 1080
+ },
+ {
+  "file": "d-03.jpg",
+  "title": "3D Elevation 04",
+  "category": "designs",
+  "stage": 0,
+  "description": "",
+  "w": 1600,
+  "h": 900
+ },
+ {
+  "file": "d-04.jpg",
+  "title": "3D Elevation 05",
+  "category": "designs",
+  "stage": 0,
+  "description": "",
+  "w": 1600,
+  "h": 900
+ },
+ {
+  "file": "d-05.jpg",
+  "title": "3D Elevation 06",
+  "category": "designs",
+  "stage": 0,
+  "description": "",
+  "w": 1248,
+  "h": 1080
+ },
+ {
+  "file": "d-06.jpg",
+  "title": "3D Elevation 07",
+  "category": "designs",
+  "stage": 0,
+  "description": "",
+  "w": 1281,
+  "h": 1080
+ },
+ {
+  "file": "d-07.jpg",
+  "title": "3D Elevation 08",
+  "category": "designs",
+  "stage": 0,
+  "description": "",
+  "w": 1600,
+  "h": 978
+ },
+ {
+  "file": "d-08.jpg",
+  "title": "3D Elevation 09",
+  "category": "designs",
+  "stage": 0,
+  "description": "",
+  "w": 1600,
+  "h": 900
+ },
+ {
+  "file": "d-09.jpg",
+  "title": "3D Elevation 10",
+  "category": "designs",
+  "stage": 0,
+  "description": "",
+  "w": 1600,
+  "h": 900
+ },
+ {
+  "file": "d-10.jpg",
+  "title": "3D Elevation 11",
+  "category": "designs",
+  "stage": 0,
+  "description": "",
+  "w": 1600,
+  "h": 900
+ },
+ {
+  "file": "d-11.jpg",
+  "title": "3D Elevation 12",
+  "category": "designs",
+  "stage": 0,
+  "description": "",
+  "w": 1600,
+  "h": 900
+ },
+ {
+  "file": "d-12.jpg",
+  "title": "3D Elevation 13",
+  "category": "designs",
+  "stage": 0,
+  "description": "",
+  "w": 1600,
+  "h": 900
+ },
+ {
+  "file": "d-13.jpg",
+  "title": "3D Elevation 14",
+  "category": "designs",
+  "stage": 0,
+  "description": "",
+  "w": 1600,
+  "h": 900
+ },
+ {
+  "file": "d-14.jpg",
+  "title": "3D Elevation 15",
+  "category": "designs",
+  "stage": 0,
+  "description": "",
+  "w": 1474,
+  "h": 1080
+ },
+ {
+  "file": "d-15.jpg",
+  "title": "3D Elevation 16",
+  "category": "designs",
+  "stage": 0,
+  "description": "",
+  "w": 1600,
+  "h": 900
+ },
+ {
+  "file": "d-18.jpg",
+  "title": "3D Elevation 17",
+  "category": "designs",
+  "stage": 0,
+  "description": "",
+  "w": 1600,
+  "h": 900
+ },
+ {
+  "file": "team-photo.jpg",
+  "title": "The Sparkle site team",
+  "category": "team",
+  "stage": 0,
+  "description": "",
+  "w": 1231,
+  "h": 1064
+ }
+]

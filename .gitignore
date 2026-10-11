@@ -1,0 +1,11 @@
+# Live data lives on the server — never commit or deploy it
+data/*.sqlite
+data/*.sqlite-*
+data/*.db
+
+# Local / OS clutter
+.claude/
+__*.js
+.DS_Store
+Thumbs.db
+*.log
