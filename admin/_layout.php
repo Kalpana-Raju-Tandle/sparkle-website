@@ -59,7 +59,8 @@ function admin_head(string $title, string $active, string $actions = ''): void
     <div class="topbar__right">
       <span class="topbar__date"><?= icon('calendar', 15) ?><?= e(date('D, d M Y')) ?></span>
       <a class="topbar__site" href="<?= url('index.php') ?>" target="_blank" rel="noopener"><?= icon('external', 15) ?><span>View website</span></a>
-      <span class="avatar avatar--sm" title="<?= e(ucfirst($user)) ?>"><?= e(mb_strtoupper(mb_substr($user, 0, 1))) ?></span>
+      <span class="avatar avatar--sm" title="Signed in as <?= e(ucfirst($user)) ?>"><?= e(mb_strtoupper(mb_substr($user, 0, 1))) ?></span>
+      <a class="topbar__out" href="<?= url('admin/logout') ?>" title="Sign out"><?= icon('logout', 15) ?><span>Sign out</span></a>
     </div>
   </header>
   <main class="main">

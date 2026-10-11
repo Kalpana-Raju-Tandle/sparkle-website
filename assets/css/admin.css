@@ -374,3 +374,16 @@ body.login{min-height:100vh;background:var(--bg)}
 .pwhint.is-ok{color:#1d7a35}.pwhint.is-bad{color:var(--red)}
 
 .btn:focus-visible{outline:0;box-shadow:0 0 0 4px rgba(212,179,147,.5)}
+
+/* Browser autofill (saved passwords): hide the hint label and keep our beige instead of Chrome's blue.
+   Kept as separate rules — a browser that doesn't know one of these selectors would drop the whole rule. */
+.ffield input:-webkit-autofill~label{opacity:0}
+.ffield input:autofill~label{opacity:0}
+.ffield input:-webkit-autofill,.ffield input:-webkit-autofill:hover{-webkit-box-shadow:0 0 0 1000px var(--cream) inset!important;-webkit-text-fill-color:var(--ink)!important;caret-color:var(--ink);transition:background-color 9999s ease 0s}
+.ffield input:-webkit-autofill:focus{-webkit-box-shadow:0 0 0 1000px #fff inset,0 0 0 4px rgba(212,179,147,.3)!important}
+input:-webkit-autofill{-webkit-box-shadow:0 0 0 1000px #fff inset!important;-webkit-text-fill-color:var(--ink)!important;transition:background-color 9999s ease 0s}
+
+/* Sign out — always visible in the top bar */
+.topbar__out{display:inline-flex;align-items:center;gap:7px;height:36px;padding:0 14px;border-radius:99px;background:#fff;border:1px solid var(--line);font:600 .82rem var(--head);color:var(--cherry);text-decoration:none;transition:.2s}
+.topbar__out:hover{background:var(--cherry);border-color:var(--cherry);color:#fff}
+@media (max-width:900px){.topbar__out{width:36px;padding:0;justify-content:center}.topbar__out span{display:none}}
