@@ -16,7 +16,7 @@ Open http://localhost:8000 — the database (`data/sparkle.sqlite`) and the star
 
 ## Admin panel — `/admin/`
 Starter login: **admin / Sparkle@2026** → change it immediately in *Settings → Change admin password*.
-- **Gallery & Uploads** — drag & drop photos, choose Construction-journey stage / Completed / 3D Designs; live instantly.
+- **Photos & Videos** — drag & drop photos or videos (MP4/MOV/WebM, sent in pieces so large clips work), choose Construction-journey stage / Completed / 3D Designs; live instantly.
 - **Projects** — titles, type, featured flag (no locations shown).
 - **Enquiries** — contact-form and estimator leads (also emailed if an email is set).
 - **Settings** — phone, WhatsApp, email, **Pandavapura primary address**, package rates (₹1,999 start), founder & designer profiles.

@@ -4,7 +4,7 @@ $title = 'Projects';
 $desc = 'Completed homes and 3D designs by Sparkle Constructions.';
 require __DIR__ . '/includes/header.php';
 
-$rows = db()->query("SELECT p.*, g.file, g.category FROM projects p JOIN gallery g ON g.id = p.gallery_id ORDER BY p.featured DESC, p.sort, p.id")->fetchAll();
+$rows = db()->query("SELECT p.*, g.file, g.category, g.video FROM projects p JOIN gallery g ON g.id = p.gallery_id ORDER BY p.featured DESC, p.sort, p.id")->fetchAll();
 ?>
 <section class="page-hero" style="--bg:url('<?= asset('img/hero-1.jpg') ?>')">
   <div class="container" data-w="PROJECTS">
@@ -34,7 +34,7 @@ $rows = db()->query("SELECT p.*, g.file, g.category FROM projects p JOIN gallery
     <div class="pjs__grid rv" id="pjs">
       <div class="pjs__stage">
         <?php foreach ($feat as $i => $p): ?>
-          <figure class="pjs__img <?= $i === 0 ? 'is-on' : '' ?>"><img src="<?= gimg($p['file']) ?>" alt="<?= e($p['title']) ?>" <?= $i > 0 ? 'loading="lazy"' : '' ?>></figure>
+          <figure class="pjs__img <?= $i === 0 ? 'is-on' : '' ?>"><img src="<?= gimg($p['file']) ?>" alt="<?= e($p['title']) ?>" <?= $i > 0 ? 'loading="lazy"' : '' ?>><?= play_badge($p) ?></figure>
         <?php endforeach; ?>
         <span class="pjs__badge"><?= icon('award', 14) ?> Featured</span>
         <span class="pjs__cnt"><b id="pjsNo">01</b> / <?= sprintf('%02d', count($feat)) ?></span>
@@ -63,7 +63,7 @@ $rows = db()->query("SELECT p.*, g.file, g.category FROM projects p JOIN gallery
         </ol>
       </div>
     </div>
-    <?php foreach ($feat as $p): ?><a class="pjs__hid" href="<?= gimg($p['file']) ?>" data-lb="pjs" data-cap="<?= e($p['title']) ?>" hidden></a><?php endforeach; ?>
+    <?php foreach ($feat as $p): ?><a class="pjs__hid" href="<?= gimg($p['file']) ?>"<?= video_attr($p) ?> data-lb="pjs" data-cap="<?= e($p['title']) ?>" hidden></a><?php endforeach; ?>
   </div>
 </section>
 <script>
@@ -102,9 +102,9 @@ $rows = db()->query("SELECT p.*, g.file, g.category FROM projects p JOIN gallery
     </div>
     <div class="pl-grid" id="projGrid">
       <?php foreach ($rows as $n => $p): ?>
-        <a class="pl" style="--i:<?= min($n, 12) ?>" data-cat="<?= e($p['category']) ?>" href="<?= gimg($p['file']) ?>" data-lb="proj" data-cap="<?= e($p['title']) ?>">
+        <a class="pl" style="--i:<?= min($n, 12) ?>" data-cat="<?= e($p['category']) ?>" href="<?= gimg($p['file']) ?>"<?= video_attr($p) ?> data-lb="proj" data-cap="<?= e($p['title']) ?>">
           <figure class="pl__ph">
-            <img src="<?= gthumb($p['file']) ?>" alt="<?= e($p['title']) ?>" loading="lazy">
+            <img src="<?= gthumb($p['file']) ?>" alt="<?= e($p['title']) ?>" loading="lazy"><?= play_badge($p) ?>
             <span class="pl__type"><?= e($typeLabel[$p['category']] ?? $p['type']) ?></span>
             <?php if ((int)$p['featured'] === 1): ?><span class="pl__star" title="Featured"><?= icon('award', 14) ?></span><?php endif; ?>
           </figure>

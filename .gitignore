@@ -9,3 +9,7 @@ __*.js
 .DS_Store
 Thumbs.db
 *.log
+
+# Admin uploads live only on the server
+uploads/videos/
+data/tmp/

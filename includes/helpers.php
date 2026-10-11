@@ -147,3 +147,63 @@ function delete_image_files(string $file): void
     $file = basename($file);
     foreach ([UPLOAD_DIR, THUMB_DIR] as $d) if (is_file($d . $file)) @unlink($d . $file);
 }
+
+/* ---------- Videos ---------- */
+
+function gvideo(array $g): string { return !empty($g['video']) ? url('uploads/videos/' . rawurlencode($g['video'])) : ''; }
+/** Extra attributes for a lightbox link/slide: the lightbox plays the clip instead of showing the cover. */
+function video_attr(array $g): string { return ($v = gvideo($g)) ? ' data-video="' . e($v) . '"' : ''; }
+/** ▶ badge laid over a video's cover image. */
+function play_badge(array $g): string
+{
+    return empty($g['video']) ? '' : '<span class="playbadge" aria-hidden="true"><svg viewBox="0 0 24 24" width="22" height="22"><path d="M8 5.5v13l11-6.5z" fill="currentColor"/></svg></span>';
+}
+
+/** Largest single request this server accepts (smaller of upload_max_filesize and post_max_size), in bytes. */
+function upload_limit_bytes(): int
+{
+    $b = function (string $v): int {
+        $v = trim($v); $n = (int)$v;
+        return match (strtolower(substr($v, -1))) { 'g' => $n << 30, 'm' => $n << 20, 'k' => $n << 10, default => $n };
+    };
+    $lims = array_filter([$b((string)ini_get('upload_max_filesize')), $b((string)ini_get('post_max_size'))]);
+    return $lims ? min($lims) : 2 << 20;
+}
+/** Size of each video piece: comfortably under the server limit (leaves room for the cover image), at most 8 MB. */
+function video_chunk_bytes(): int { return max(512 << 10, min(8 << 20, upload_limit_bytes() - (1 << 20))); }
+
+const VIDEO_TYPES = ['video/mp4' => 'mp4', 'video/webm' => 'webm', 'video/quicktime' => 'mov', 'video/x-m4v' => 'mp4'];
+
+/**
+ * Receive one piece of a video upload. Pieces arrive in order; the last one returns the finished file.
+ * Returns [ok, message|'' (more pieces expected)|final filename].
+ */
+function save_video_chunk(string $id, int $index, int $total, array $f): array
+{
+    if (!preg_match('/^[a-f0-9]{16,40}$/', $id) || $index < 0 || $total < 1 || $index >= $total) return [false, 'bad upload request'];
+    if (($f['error'] ?? 1) !== UPLOAD_ERR_OK) return [false, ($f['error'] ?? 0) === UPLOAD_ERR_INI_SIZE ? 'the server refused a piece as too large' : 'a piece of the video failed to upload — please try again'];
+    foreach ([CHUNK_DIR, VIDEO_DIR] as $d) if (!is_dir($d)) mkdir($d, 0755, true);
+
+    // Tidy up abandoned uploads older than a day.
+    foreach (glob(CHUNK_DIR . '*.part') ?: [] as $old) if (filemtime($old) < time() - 86400) @unlink($old);
+
+    $part = CHUNK_DIR . $id . '.part';
+    if ($index === 0 && is_file($part)) unlink($part);
+    if ($index > 0 && !is_file($part)) return [false, 'upload was interrupted — please try again'];
+    if ((is_file($part) ? filesize($part) : 0) + $f['size'] > MAX_VIDEO_BYTES) { @unlink($part); return [false, 'video is larger than ' . (MAX_VIDEO_BYTES >> 20) . ' MB']; }
+    if (file_put_contents($part, file_get_contents($f['tmp_name']), FILE_APPEND | LOCK_EX) === false) return [false, 'could not save the video on the server'];
+    if ($index < $total - 1) return [true, ''];
+
+    $mime = (new finfo(FILEINFO_MIME_TYPE))->file($part);
+    $ext = VIDEO_TYPES[$mime] ?? null;
+    if (!$ext) { unlink($part); return [false, 'only MP4, MOV or WebM videos are allowed']; }
+    $name = bin2hex(random_bytes(8)) . '.' . $ext;
+    if (!rename($part, VIDEO_DIR . $name)) { @unlink($part); return [false, 'could not save the video on the server']; }
+    return [true, $name];
+}
+
+function delete_video_file(string $file): void
+{
+    $file = basename($file);
+    if ($file !== '' && is_file(VIDEO_DIR . $file)) @unlink(VIDEO_DIR . $file);
+}

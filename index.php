@@ -4,7 +4,7 @@ $bodyClass = 'home';
 require __DIR__ . '/includes/header.php';
 
 $pdo = db();
-$featured = $pdo->query("SELECT p.*, g.file FROM projects p LEFT JOIN gallery g ON g.id = p.gallery_id WHERE p.featured = 1 ORDER BY p.sort LIMIT 5")->fetchAll();
+$featured = $pdo->query("SELECT p.*, g.file, g.video FROM projects p LEFT JOIN gallery g ON g.id = p.gallery_id WHERE p.featured = 1 ORDER BY p.sort LIMIT 5")->fetchAll();
 $counts = [
     'completed' => (int)$pdo->query("SELECT COUNT(*) FROM gallery WHERE category='completed'")->fetchColumn(),
     'designs'   => (int)$pdo->query("SELECT COUNT(*) FROM gallery WHERE category='designs'")->fetchColumn(),
@@ -241,7 +241,7 @@ $stageImgs = $pdo->query("SELECT * FROM gallery WHERE id IN (SELECT MIN(id) FROM
 </section>
 
 <!-- ============ PROJECTS (gliding rows) ============ -->
-<?php $mq = $pdo->query("SELECT p.*, g.file FROM projects p JOIN gallery g ON g.id = p.gallery_id ORDER BY p.featured DESC, p.sort, p.id LIMIT 14")->fetchAll();
+<?php $mq = $pdo->query("SELECT p.*, g.file, g.video FROM projects p JOIN gallery g ON g.id = p.gallery_id ORDER BY p.featured DESC, p.sort, p.id LIMIT 14")->fetchAll();
       $mqRows = [array_slice($mq, 0, 7), array_slice($mq, 7, 7)]; ?>
 <section class="mq" id="projects-home">
   <div class="container mq__head rv">
@@ -270,9 +270,9 @@ $stageImgs = $pdo->query("SELECT * FROM gallery WHERE id IN (SELECT MIN(id) FROM
       <div class="mq__row <?= $r ? 'mq__row--rev' : '' ?>">
         <div class="mq__track">
           <?php foreach ($row as $i => $p): $n++; $is3d = stripos($p['type'], '3d') !== false; ?>
-            <a class="mq__c mq__c--<?= ['a', 'b', 'c'][($i + $r) % 3] ?> <?= ($i + $r) % 2 ? 'mq__c--lo' : '' ?> <?= $is3d ? 'is-3d' : '' ?>" href="<?= gimg($p['file']) ?>" data-lb="mq" data-cap="<?= e($p['title']) ?>" aria-label="<?= e($p['title']) ?>">
+            <a class="mq__c mq__c--<?= ['a', 'b', 'c'][($i + $r) % 3] ?> <?= ($i + $r) % 2 ? 'mq__c--lo' : '' ?> <?= $is3d ? 'is-3d' : '' ?>" href="<?= gimg($p['file']) ?>"<?= video_attr($p) ?> data-lb="mq" data-cap="<?= e($p['title']) ?>" aria-label="<?= e($p['title']) ?>">
               <span class="mq__ph">
-                <img src="<?= gthumb($p['file']) ?>" alt="<?= e($p['title']) ?>" draggable="false" <?= $i > 2 ? 'loading="lazy"' : '' ?>>
+                <img src="<?= gthumb($p['file']) ?>" alt="<?= e($p['title']) ?>" draggable="false" <?= $i > 2 ? 'loading="lazy"' : '' ?>><?= play_badge($p) ?>
               </span>
             </a>
           <?php endforeach; ?>
@@ -345,7 +345,7 @@ $stageImgs = $pdo->query("SELECT * FROM gallery WHERE id IN (SELECT MIN(id) FROM
         <!-- big viewer -->
         <div class="gv__viewer">
           <?php foreach ($gv as $k => $g): ?>
-            <figure class="gv__img <?= $k === 0 ? 'is-on' : '' ?>"><img src="<?= gimg($g['file']) ?>" alt="<?= e($g['title']) ?>" <?= $k > 1 ? 'loading="lazy"' : '' ?>></figure>
+            <figure class="gv__img <?= $k === 0 ? 'is-on' : '' ?>"><img src="<?= gimg($g['file']) ?>" alt="<?= e($g['title']) ?>" <?= $k > 1 ? 'loading="lazy"' : '' ?>><?= play_badge($g) ?></figure>
           <?php endforeach; ?>
           <div class="gv__top"><span class="gv__pill" id="gvPill"></span><span class="gv__cnt"><b id="gvNo">01</b> / <?= sprintf('%02d', $gvN) ?></span></div>
           <div class="gv__cap"><small>Real site photo</small><b id="gvCap"></b></div>
@@ -360,10 +360,10 @@ $stageImgs = $pdo->query("SELECT * FROM gallery WHERE id IN (SELECT MIN(id) FROM
         <?php $lastSt = 0; foreach ($gv as $k => $g): $st = (int)$g['stage']; if ($st !== $lastSt): $lastSt = $st; ?>
           <span class="gv__chap"><b><?= sprintf('%02d', $st) ?></b><?= e(STAGES[$st] ?? '') ?></span>
         <?php endif; ?>
-          <button type="button" class="gv__th <?= $k === 0 ? 'is-on' : '' ?>" data-i="<?= $k ?>" data-stage="<?= $st ?>" data-cap="<?= e($g['title']) ?>" aria-label="<?= e($g['title']) ?>"><img src="<?= gthumb($g['file']) ?>" alt="" loading="lazy"></button>
+          <button type="button" class="gv__th <?= $k === 0 ? 'is-on' : '' ?>" data-i="<?= $k ?>" data-stage="<?= $st ?>" data-cap="<?= e($g['title']) ?>" aria-label="<?= e($g['title']) ?>"><img src="<?= gthumb($g['file']) ?>" alt="" loading="lazy"><?= play_badge($g) ?></button>
         <?php endforeach; ?>
       </div>
-      <?php foreach ($gv as $g): ?><a class="gv__hid" href="<?= gimg($g['file']) ?>" data-lb="gv" data-cap="<?= e($g['title']) ?>" hidden></a><?php endforeach; ?>
+      <?php foreach ($gv as $g): ?><a class="gv__hid" href="<?= gimg($g['file']) ?>"<?= video_attr($g) ?> data-lb="gv" data-cap="<?= e($g['title']) ?>" hidden></a><?php endforeach; ?>
 
       <div class="gv__foot"><a class="btn btn--lg" href="<?= url('gallery.php') ?>">Open the full gallery <?= icon('arrow', 18) ?></a></div>
     </div>

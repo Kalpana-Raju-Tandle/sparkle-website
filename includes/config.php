@@ -14,6 +14,9 @@ define('DB_FILE', ROOT . '/data/sparkle.sqlite');
 define('UPLOAD_DIR', ROOT . '/uploads/gallery/');
 define('THUMB_DIR', ROOT . '/uploads/thumbs/');
 define('MAX_UPLOAD_BYTES', 15 * 1024 * 1024);
+define('VIDEO_DIR', ROOT . '/uploads/videos/');
+define('MAX_VIDEO_BYTES', 300 * 1024 * 1024);      // videos arrive in small chunks, so this is not tied to PHP's upload limit
+define('CHUNK_DIR', ROOT . '/data/tmp/');           // half-uploaded videos (data/ is not web-accessible)
 define('SITE_NAME', 'Sparkle Constructions');
 
 // Web path of the site root, so the site also works from a sub-folder.

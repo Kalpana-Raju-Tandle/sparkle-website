@@ -208,10 +208,17 @@
   });
 
   /* lightbox */
-  const lb = $('#lightbox'), lbImg = $('img', lb), lbCap = $('figcaption', lb);
+  const lb = $('#lightbox'), lbImg = $('img', lb), lbVid = $('video', lb), lbCap = $('figcaption', lb);
   let group = [], idx = 0;
-  const show = i => { idx = (i + group.length) % group.length; const a = group[idx]; lbImg.src = a.href; lbImg.alt = a.dataset.cap || ''; lbCap.textContent = a.dataset.cap || ''; };
-  const close = () => { lb.hidden = true; document.body.style.overflow = ''; };
+  const stopVideo = () => { lbVid.pause(); lbVid.removeAttribute('src'); lbVid.load(); lbVid.hidden = true; };
+  const show = i => {
+    idx = (i + group.length) % group.length; const a = group[idx], vid = a.dataset.video;
+    stopVideo(); lbImg.hidden = !!vid;
+    if (vid) { lbVid.poster = a.href; lbVid.src = vid; lbVid.hidden = false; lbVid.play().catch(() => {}); }
+    else { lbImg.src = a.href; lbImg.alt = a.dataset.cap || ''; }
+    lbCap.textContent = a.dataset.cap || '';
+  };
+  const close = () => { stopVideo(); lb.hidden = true; document.body.style.overflow = ''; };
   document.addEventListener('click', e => {
     const a = e.target.closest('[data-lb]');
     if (a) {

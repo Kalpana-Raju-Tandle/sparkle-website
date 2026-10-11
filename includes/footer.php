@@ -66,7 +66,7 @@
 <div class="lightbox" id="lightbox" hidden aria-modal="true" role="dialog" aria-label="Image viewer">
   <button class="lb__close" aria-label="Close">×</button>
   <button class="lb__nav lb__prev" aria-label="Previous">‹</button>
-  <figure><img alt=""><figcaption></figcaption></figure>
+  <figure><img alt=""><video controls playsinline preload="metadata" hidden></video><figcaption></figcaption></figure>
   <button class="lb__nav lb__next" aria-label="Next">›</button>
 </div>
 

@@ -35,7 +35,7 @@ admin_head('Projects', 'projects');
     <form method="post" class="inline"><?= csrf_field() ?><input type="hidden" name="do" value="add">
       <select name="gallery_id"><?php foreach ($avail as $a): ?><option value="<?= (int)$a['id'] ?>"><?= e($a['title']) ?></option><?php endforeach; ?></select>
       <button class="btn sm">Add project</button></form>
-  <?php else: ?><p class="muted">Every Completed / 3D photo is already a project. Upload more in Gallery &amp; Uploads.</p><?php endif; ?>
+  <?php else: ?><p class="muted">Every Completed / 3D photo is already a project. Upload more in Photos &amp; Videos.</p><?php endif; ?>
 </div>
 <p class="muted">Tick <b>Featured</b> to show a project on the home page (the first five featured are shown). Locations are intentionally not shown on the website.</p>
 <div class="panel">

@@ -60,6 +60,10 @@ function migrate(PDO $pdo, bool $fresh): void
     CREATE TABLE IF NOT EXISTS login_attempts (ip TEXT NOT NULL, at INTEGER NOT NULL);
     ");
 
+    // Videos: `file` holds the cover image (so every photo slot can show it), `video` the clip itself.
+    $cols = array_column($pdo->query('PRAGMA table_info(gallery)')->fetchAll(), 'name');
+    if (!in_array('video', $cols, true)) $pdo->exec("ALTER TABLE gallery ADD COLUMN video TEXT NOT NULL DEFAULT ''");
+
     $ins = $pdo->prepare('INSERT OR IGNORE INTO settings (k, v) VALUES (?, ?)');
     foreach (SETTING_DEFAULTS as $k => $v) $ins->execute([$k, $v]);
 

@@ -43,7 +43,7 @@ $all = $pdo->query("SELECT * FROM gallery WHERE category != 'team' ORDER BY cate
       <div class="gv__main">
         <div class="gv__viewer">
           <?php foreach ($journey as $k => $j): ?>
-            <figure class="gv__img <?= $k === 0 ? 'is-on' : '' ?>"><img src="<?= gimg($j['file']) ?>" alt="<?= e($j['title']) ?>" <?= $k > 1 ? 'loading="lazy"' : '' ?>></figure>
+            <figure class="gv__img <?= $k === 0 ? 'is-on' : '' ?>"><img src="<?= gimg($j['file']) ?>" alt="<?= e($j['title']) ?>" <?= $k > 1 ? 'loading="lazy"' : '' ?>><?= play_badge($j) ?></figure>
           <?php endforeach; ?>
           <div class="gv__top"><span class="gv__pill" id="gvPill"></span><span class="gv__cnt"><b id="gvNo">01</b> / <?= sprintf('%02d', count($journey)) ?></span></div>
           <div class="gv__cap"><small>Real site photo</small><b id="gvCap"></b></div>
@@ -56,10 +56,10 @@ $all = $pdo->query("SELECT * FROM gallery WHERE category != 'team' ORDER BY cate
         <?php $lastSt = 0; foreach ($journey as $k => $j): $st = (int)$j['stage']; if ($st !== $lastSt): $lastSt = $st; ?>
           <span class="gv__chap"><b><?= sprintf('%02d', $st) ?></b><?= e(STAGES[$st] ?? '') ?></span>
         <?php endif; ?>
-          <button type="button" class="gv__th <?= $k === 0 ? 'is-on' : '' ?>" data-i="<?= $k ?>" data-stage="<?= $st ?>" data-cap="<?= e($j['title']) ?>" aria-label="<?= e($j['title']) ?>"><img src="<?= gthumb($j['file']) ?>" alt="" loading="lazy"></button>
+          <button type="button" class="gv__th <?= $k === 0 ? 'is-on' : '' ?>" data-i="<?= $k ?>" data-stage="<?= $st ?>" data-cap="<?= e($j['title']) ?>" aria-label="<?= e($j['title']) ?>"><img src="<?= gthumb($j['file']) ?>" alt="" loading="lazy"><?= play_badge($j) ?></button>
         <?php endforeach; ?>
       </div>
-      <?php foreach ($journey as $j): ?><a class="gv__hid" href="<?= gimg($j['file']) ?>" data-lb="gv" data-cap="Stage <?= (int)$j['stage'] ?> · <?= e($j['title']) ?>" hidden></a><?php endforeach; ?>
+      <?php foreach ($journey as $j): ?><a class="gv__hid" href="<?= gimg($j['file']) ?>"<?= video_attr($j) ?> data-lb="gv" data-cap="Stage <?= (int)$j['stage'] ?> · <?= e($j['title']) ?>" hidden></a><?php endforeach; ?>
     </div>
   </div>
 </section>
@@ -78,8 +78,8 @@ $all = $pdo->query("SELECT * FROM gallery WHERE category != 'team' ORDER BY cate
 
     <div class="masonry glm" id="galGrid">
       <?php foreach ($all as $n => $g): ?>
-        <a class="mi" style="--i:<?= min($n, 14) ?>" data-cat="<?= e($g['category']) ?>" href="<?= gimg($g['file']) ?>" data-lb="gal" data-cap="<?= e($g['title']) ?>">
-          <img src="<?= gthumb($g['file']) ?>" alt="<?= e($g['title']) ?>" loading="lazy" width="<?= (int)$g['w'] ?>" height="<?= (int)$g['h'] ?>">
+        <a class="mi" style="--i:<?= min($n, 14) ?>" data-cat="<?= e($g['category']) ?>" href="<?= gimg($g['file']) ?>"<?= video_attr($g) ?> data-lb="gal" data-cap="<?= e($g['title']) ?>">
+          <img src="<?= gthumb($g['file']) ?>" alt="<?= e($g['title']) ?>" loading="lazy" width="<?= (int)$g['w'] ?>" height="<?= (int)$g['h'] ?>"><?= play_badge($g) ?>
           <em><?= e(CATEGORIES[$g['category']] ?? '') ?></em>
           <i class="mi__z" aria-hidden="true"><?= icon('arrow', 18) ?></i>
           <span><?= e($g['title']) ?></span>
