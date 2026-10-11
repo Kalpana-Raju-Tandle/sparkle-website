@@ -1,7 +1,7 @@
 <?php
 require_once __DIR__ . '/../includes/helpers.php';
 header('X-Robots-Tag: noindex, nofollow');
-if (is_admin()) redirect(url('admin/index.php'));
+if (is_admin()) redirect(url('admin/'));
 
 $err = '';
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
@@ -20,7 +20,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             session_regenerate_id(true);
             $_SESSION['admin_id'] = (int)$u['id'];
             $pdo->prepare('DELETE FROM login_attempts WHERE ip = ?')->execute([$ip]);
-            redirect(url('admin/index.php'));
+            redirect(url('admin/'));
         }
         $pdo->prepare('INSERT INTO login_attempts (ip, at) VALUES (?, ?)')->execute([$ip, time()]);
         $err = 'Incorrect username or password.';
@@ -34,32 +34,36 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 <link rel="stylesheet" href="<?= asset('css/admin.css') ?>"></head>
 <body class="login">
 <main class="auth">
-  <aside class="auth__art" style="background-image:url('<?= asset('img/hero-2.jpg') ?>')">
-    <div class="auth__art-in">
-      <p class="auth__kick"><i></i>Sparkle Constructions</p>
-      <h2>Building sustainable homes <em>for future generations.</em></h2>
-      <ul class="auth__pts">
-        <li><?= icon('camera', 16) ?> Upload site photos &amp; videos</li>
-        <li><?= icon('home', 16) ?> Showcase finished homes</li>
-        <li><?= icon('mail', 16) ?> Reply to new enquiries</li>
-      </ul>
-    </div>
-  </aside>
-  <form class="login__box" method="post">
-    <img src="<?= asset('img/logo.png') ?>" alt="Sparkle Constructions">
-    <p class="login__kick"><i></i>Team area<i></i></p>
-    <h1>Welcome <em>back</em></h1>
-    <p>Sign in to manage your website.</p>
-    <?php if ($err): ?><div class="note note--err"><?= e($err) ?></div><?php endif; ?>
-    <?= csrf_field() ?>
-    <label>Username<span class="field"><?= icon('users', 18) ?><input name="username" autocomplete="username" required autofocus placeholder="Your username"></span></label>
-    <label>Password<span class="field"><?= icon('key', 18) ?><input name="password" id="pw" type="password" autocomplete="current-password" required placeholder="Your password"><button type="button" class="field__eye" id="pwEye" aria-label="Show password">Show</button></span></label>
-    <button class="btn" type="submit">Sign in <?= icon('arrow', 18) ?></button>
-    <a class="back" href="<?= url('index.php') ?>">← Back to website</a>
-  </form>
+  <aside class="auth__art" style="background-image:url('<?= asset('img/hero-2.jpg') ?>')" aria-hidden="true"></aside>
+  <section class="auth__panel">
+  <div class="lcard">
+    <form class="login__box" method="post">
+      <header class="login__head">
+        <span class="login__badge"><img src="<?= asset('img/logo.png') ?>" alt="Sparkle Constructions"></span>
+        <p class="login__kick"><i></i>Team area<i></i></p>
+        <h1>Welcome <em>back</em></h1>
+        <p class="login__lead">Sign in to manage your website.</p>
+      </header>
+      <div class="login__body">
+        <?php if ($err): ?><div class="note note--err"><?= icon('x', 18) ?><span><?= e($err) ?></span></div><?php endif; ?>
+        <?= csrf_field() ?>
+        <div class="ffield">
+          <span class="ffield__ic"><?= icon('users', 18) ?></span>
+          <input id="lgUser" name="username" autocomplete="username" required autofocus placeholder=" ">
+          <label for="lgUser">Username</label>
+        </div>
+        <div class="ffield">
+          <span class="ffield__ic"><?= icon('key', 18) ?></span>
+          <input id="pw" name="password" type="password" autocomplete="current-password" required placeholder=" ">
+          <label for="pw">Password</label>
+          <button type="button" class="pweye" aria-label="Show password" title="Show password"><?= icon('eye', 18) ?><?= icon('eyeoff', 18) ?></button>
+        </div>
+        <button class="btn login__btn" type="submit"><span>Sign in</span><i><?= icon('arrow', 18) ?></i></button>
+        <a class="login__back" href="<?= url('index.php') ?>">← Back to website</a>
+      </div>
+    </form>
+  </div>
+  </section>
 </main>
-<script>
-const pw = document.getElementById('pw'), eye = document.getElementById('pwEye');
-eye.onclick = () => { const show = pw.type === 'password'; pw.type = show ? 'text' : 'password'; eye.textContent = show ? 'Hide' : 'Show'; eye.setAttribute('aria-label', show ? 'Hide password' : 'Show password'); pw.focus(); };
-</script>
+<script src="<?= asset('js/admin.js') ?>" defer></script>
 </body></html>

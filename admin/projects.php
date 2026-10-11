@@ -3,7 +3,7 @@ require __DIR__ . '/_layout.php';
 $pdo = db();
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    if (!csrf_ok()) { flash('Session expired — try again.', 'err'); redirect('projects.php'); }
+    if (!csrf_ok()) { flash('Session expired — try again.', 'err'); redirect('projects'); }
     $id = (int)($_POST['id'] ?? 0);
     switch ($_POST['do'] ?? '') {
         case 'save':
@@ -22,7 +22,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 flash('Project added.');
             }
     }
-    redirect('projects.php');
+    redirect('projects');
 }
 
 $rows = $pdo->query('SELECT p.*, g.file FROM projects p LEFT JOIN gallery g ON g.id=p.gallery_id ORDER BY p.featured DESC, p.sort, p.id')->fetchAll();

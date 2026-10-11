@@ -3,7 +3,7 @@ require __DIR__ . '/_layout.php';
 $pdo = db();
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    if (!csrf_ok()) { flash('Session expired — try again.', 'err'); redirect('gallery.php'); }
+    if (!csrf_ok()) { flash('Session expired — try again.', 'err'); redirect('gallery'); }
     $id = (int)($_POST['id'] ?? 0);
     if (($_POST['do'] ?? '') === 'delete') {
         $f = $pdo->prepare('SELECT file, video FROM gallery WHERE id=?'); $f->execute([$id]); $item = $f->fetch();
@@ -21,7 +21,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             ->execute([mb_substr(trim((string)$_POST['title']), 0, 120), $cat, $stage, (int)($_POST['sort'] ?? 0), $id]);
         flash('Saved.');
     }
-    redirect('gallery.php?cat=' . urlencode($_GET['cat'] ?? ''));
+    redirect('gallery?cat=' . urlencode($_GET['cat'] ?? ''));
 }
 
 $cat = $_GET['cat'] ?? '';
@@ -30,53 +30,122 @@ $rows = $cat && isset(CATEGORIES[$cat])
 if ($rows) { $rows->execute([$cat]); $rows = $rows->fetchAll(); }
 else $rows = $pdo->query('SELECT * FROM gallery ORDER BY category, stage, sort, id')->fetchAll();
 
-admin_head('Photos & Videos', 'gallery');
+$counts = array_column($pdo->query('SELECT category, COUNT(*) n FROM gallery GROUP BY category')->fetchAll(), 'n', 'category');
+$nVideos = (int)$pdo->query("SELECT COUNT(*) FROM gallery WHERE video != ''")->fetchColumn();
+$total = (int)array_sum($counts);
+$catIcons = ['journey' => 'layers', 'completed' => 'home', 'designs' => 'pen', 'team' => 'users'];
+admin_head('Photos & Videos', 'gallery', '<a class="btn btn--gold" href="#upload">' . icon('upload', 18) . ' Upload</a>');
 ?>
-<div class="panel">
-  <h2>Upload photos &amp; videos</h2>
-  <p class="muted">Drag &amp; drop photos (JPG / PNG / WebP, up to 15 MB) or videos (MP4 / MOV / WebM, up to <?= MAX_VIDEO_BYTES >> 20 ?> MB). They go live on the website immediately — videos show with a ▶ play button.</p>
-  <div class="upopts">
-    <label>Put them in
-      <select id="upCat"><?php foreach (CATEGORIES as $k => $v): ?><option value="<?= $k ?>"><?= e($v) ?></option><?php endforeach; ?></select></label>
-    <label id="stageWrap">Construction stage
-      <select id="upStage"><?php foreach (STAGES as $n => $v): ?><option value="<?= $n ?>"><?= $n ?> · <?= e($v) ?></option><?php endforeach; ?></select></label>
-    <label id="projWrap" class="chk"><input type="checkbox" id="upProj" checked> Also list under Projects</label>
-  </div>
-  <div class="drop" id="drop" tabindex="0">
-    <strong>Drop photos or videos here</strong><span>or click to choose from your computer or phone</span>
-    <input type="file" id="file" accept="image/jpeg,image/png,image/webp,video/mp4,video/quicktime,video/webm,.mp4,.mov,.m4v,.webm" multiple hidden>
-  </div>
-  <ul class="uplist" id="uplist"></ul>
+<div class="upgrid" id="upload">
+  <section class="panel upcard">
+    <div class="step"><span>1</span><div><h2>Where should they appear?</h2><p class="muted">Pick the section of the website.</p></div></div>
+    <div class="segs" role="radiogroup" aria-label="Website section">
+      <?php foreach (CATEGORIES as $k => $v): ?>
+        <label class="seg"><input type="radio" name="upCatR" value="<?= $k ?>" <?= $k === 'journey' ? 'checked' : '' ?>><span><?= icon($catIcons[$k] ?? 'image', 18) ?><b><?= e($v) ?></b><small><?= (int)($counts[$k] ?? 0) ?> items</small></span></label>
+      <?php endforeach; ?>
+    </div>
+    <select id="upCat" hidden><?php foreach (CATEGORIES as $k => $v): ?><option value="<?= $k ?>"><?= e($v) ?></option><?php endforeach; ?></select>
+
+    <div id="stageWrap" class="stagepick">
+      <p class="stagepick__lbl">Construction stage</p>
+      <div class="stagechips" role="radiogroup" aria-label="Construction stage">
+        <?php foreach (STAGES as $n => $v): ?>
+          <label class="stagechip"><input type="radio" name="upStageR" value="<?= $n ?>" <?= $n === 1 ? 'checked' : '' ?>><span><i><?= sprintf('%02d', $n) ?></i><?= e($v) ?></span></label>
+        <?php endforeach; ?>
+      </div>
+      <select id="upStage" hidden><?php foreach (STAGES as $n => $v): ?><option value="<?= $n ?>"><?= e($v) ?></option><?php endforeach; ?></select>
+    </div>
+    <label id="projWrap" class="switch"><input type="checkbox" id="upProj" checked><span class="switch__ui"></span><span>Also show on the <b>Projects</b> page</span></label>
+
+    <div class="step"><span>2</span><div><h2>Add your files</h2><p class="muted">Photos up to 15 MB · videos up to <?= MAX_VIDEO_BYTES >> 20 ?> MB — they go live instantly.</p></div></div>
+    <div class="drop" id="drop" tabindex="0" role="button" aria-label="Choose photos or videos to upload">
+      <span class="drop__ic"><?= icon('upload', 26) ?></span>
+      <strong>Drag &amp; drop photos or videos</strong>
+      <span class="drop__or">or</span>
+      <span class="btn btn--dark sm drop__btn">Browse files</span>
+      <span class="drop__types"><i>JPG</i><i>PNG</i><i>WebP</i><i>MP4</i><i>MOV</i><i>WebM</i></span>
+      <input type="file" id="file" accept="image/jpeg,image/png,image/webp,video/mp4,video/quicktime,video/webm,.mp4,.mov,.m4v,.webm" multiple hidden>
+    </div>
+    <ul class="uplist" id="uplist"></ul>
+  </section>
+
+  <aside class="upside">
+    <section class="panel libstat">
+      <h2>Your library</h2>
+      <div class="libstat__big"><b><?= $total ?></b><span>items on the website</span></div>
+      <div class="libstat__pair"><div><?= icon('image', 16) ?><b><?= $total - $nVideos ?></b><small>Photos</small></div><div><?= icon('video', 16) ?><b><?= $nVideos ?></b><small>Videos</small></div></div>
+      <ul class="libstat__bars">
+        <?php foreach (CATEGORIES as $k => $v): $c = (int)($counts[$k] ?? 0); ?>
+          <li><span><?= e($v) ?></span><b><?= $c ?></b><i><em style="width:<?= $total ? round($c / $total * 100) : 0 ?>%"></em></i></li>
+        <?php endforeach; ?>
+      </ul>
+    </section>
+    <section class="panel tips">
+      <h2><?= icon('award', 18) ?> Tips for great uploads</h2>
+      <ul>
+        <li>Hold the phone <b>sideways</b> for site photos and videos.</li>
+        <li>Short clips (<b>15–60 seconds</b>) load fastest for visitors.</li>
+        <li>Upload videos as <b>MP4</b> so they play on every phone.</li>
+        <li>Give each item a clear title, e.g. <i>“Slab casting – Mandya”</i>.</li>
+      </ul>
+    </section>
+  </aside>
 </div>
 
-<div class="panel">
-  <h2>All photos &amp; videos <small>(<?= count($rows) ?>)</small></h2>
-  <div class="filters">
-    <a href="gallery.php" class="<?= !$cat ? 'on' : '' ?>">All</a>
-    <?php foreach (CATEGORIES as $k => $v): ?><a href="?cat=<?= $k ?>" class="<?= $cat === $k ? 'on' : '' ?>"><?= e($v) ?></a><?php endforeach; ?>
+<section class="panel lib">
+  <div class="lib__bar">
+    <h2>Media library <small><?= count($rows) ?> shown</small></h2>
+    <label class="search"><?= icon('search', 16) ?><input type="search" id="libSearch" placeholder="Search by title…" aria-label="Search by title"></label>
   </div>
-  <div class="thumbs">
+  <div class="tabs">
+    <a href="gallery" class="<?= !$cat ? 'on' : '' ?>">All <i><?= $total ?></i></a>
+    <?php foreach (CATEGORIES as $k => $v): ?><a href="?cat=<?= $k ?>" class="<?= $cat === $k ? 'on' : '' ?>"><?= e($v) ?> <i><?= (int)($counts[$k] ?? 0) ?></i></a><?php endforeach; ?>
+  </div>
+  <div class="thumbs" id="libGrid">
     <?php foreach ($rows as $g): ?>
-      <form class="thumb <?= $g['video'] ? 'is-video' : '' ?>" method="post" action="gallery.php?cat=<?= e($cat) ?>">
+      <form class="thumb <?= $g['video'] ? 'is-video' : '' ?>" method="post" action="gallery?cat=<?= e($cat) ?>" data-title="<?= e(mb_strtolower($g['title'])) ?>">
         <?= csrf_field() ?><input type="hidden" name="id" value="<?= (int)$g['id'] ?>">
-        <?php if ($g['video']): ?><a class="vid" href="<?= e(gvideo($g)) ?>" target="_blank" rel="noopener" title="Play video"><img src="<?= gthumb($g['file']) ?>" alt="" loading="lazy"><span>▶ Video</span></a>
-        <?php else: ?><img src="<?= gthumb($g['file']) ?>" alt="" loading="lazy"><?php endif; ?>
-        <input name="title" value="<?= e($g['title']) ?>" aria-label="Title">
-        <select name="category" class="catsel"><?php foreach (CATEGORIES as $k => $v): ?><option value="<?= $k ?>" <?= $g['category'] === $k ? 'selected' : '' ?>><?= e($v) ?></option><?php endforeach; ?></select>
-        <select name="stage" aria-label="Stage" <?= $g['category'] !== 'journey' ? 'hidden' : '' ?>><?php foreach (STAGES as $n => $v): ?><option value="<?= $n ?>" <?= (int)$g['stage'] === $n ? 'selected' : '' ?>><?= $n ?> · <?= e($v) ?></option><?php endforeach; ?></select>
-        <label class="ord">Order <input type="number" name="sort" value="<?= (int)$g['sort'] ?>"></label>
-        <div class="acts"><button class="btn sm" name="do" value="save">Save</button>
-          <button class="btn sm danger" name="do" value="delete" onclick="return confirm('Delete this <?= $g['video'] ? 'video' : 'photo' ?> permanently?')">Delete</button></div>
+        <div class="thumb__media">
+          <img src="<?= gthumb($g['file']) ?>" alt="" loading="lazy">
+          <span class="thumb__cat"><?= e(CATEGORIES[$g['category']] ?? '') ?><?= $g['category'] === 'journey' ? ' · ' . sprintf('%02d', (int)$g['stage']) : '' ?></span>
+          <?php if ($g['video']): ?><a class="thumb__play" href="<?= e(gvideo($g)) ?>" target="_blank" rel="noopener" title="Play video"><?= icon('video', 14) ?> Video</a><?php endif; ?>
+          <a class="thumb__open" href="<?= e($g['video'] ? gvideo($g) : gimg($g['file'])) ?>" target="_blank" rel="noopener" title="Open full size"><?= icon('external', 15) ?></a>
+        </div>
+        <div class="thumb__body">
+          <input name="title" class="thumb__title" value="<?= e($g['title']) ?>" aria-label="Title">
+          <div class="thumb__row">
+            <select name="category" class="catsel" aria-label="Section"><?php foreach (CATEGORIES as $k => $v): ?><option value="<?= $k ?>" <?= $g['category'] === $k ? 'selected' : '' ?>><?= e($v) ?></option><?php endforeach; ?></select>
+            <label class="ord" title="Display order (lower comes first)">#<input type="number" name="sort" value="<?= (int)$g['sort'] ?>" aria-label="Display order"></label>
+          </div>
+          <select name="stage" aria-label="Stage" <?= $g['category'] !== 'journey' ? 'hidden' : '' ?>><?php foreach (STAGES as $n => $v): ?><option value="<?= $n ?>" <?= (int)$g['stage'] === $n ? 'selected' : '' ?>><?= sprintf('%02d', $n) ?> · <?= e($v) ?></option><?php endforeach; ?></select>
+          <div class="acts">
+            <button class="btn sm btn--save" name="do" value="save"><?= icon('check', 15) ?> Save</button>
+            <button class="iconbtn danger" name="do" value="delete" title="Delete" aria-label="Delete" onclick="return confirm('Delete this <?= $g['video'] ? 'video' : 'photo' ?> permanently?')"><?= icon('trash', 16) ?></button>
+          </div>
+        </div>
       </form>
     <?php endforeach; ?>
   </div>
-</div>
+  <p class="muted lib__empty" id="libEmpty" hidden>No items match your search.</p>
+</section>
 
 <script>
-const csrf = <?= json_encode(csrf_token()) ?>, uploadUrl = <?= json_encode(url('admin/upload.php')) ?>;
+const csrf = <?= json_encode(csrf_token()) ?>, uploadUrl = <?= json_encode(url('admin/upload')) ?>;
 const $ = s => document.querySelector(s);
 const cat = $('#upCat'), sync = () => { $('#stageWrap').style.display = cat.value === 'journey' ? '' : 'none'; $('#projWrap').style.display = ['completed','designs'].includes(cat.value) ? '' : 'none'; };
 cat.onchange = sync; sync();
+// Chips and switches drive the (hidden) selects the upload code reads.
+document.querySelectorAll('[name=upCatR]').forEach(r => r.onchange = () => { cat.value = r.value; sync(); });
+document.querySelectorAll('[name=upStageR]').forEach(r => r.onchange = () => { $('#upStage').value = r.value; });
+// A card's Save button lights up once something on that card is edited.
+const cards0 = document.querySelectorAll('#libGrid .thumb');
+cards0.forEach(f => f.addEventListener('input', () => f.classList.add('is-dirty')));
+const search = $('#libSearch'), cards = [...document.querySelectorAll('#libGrid .thumb')];
+search.oninput = () => {
+  const q = search.value.trim().toLowerCase(); let shown = 0;
+  cards.forEach(c => { const hit = !q || c.dataset.title.includes(q); c.hidden = !hit; shown += hit; });
+  $('#libEmpty').hidden = shown > 0;
+};
 document.querySelectorAll('.catsel').forEach(s => s.onchange = () => { s.form.querySelector('[name=stage]').hidden = s.value !== 'journey'; });
 
 const drop = $('#drop'), file = $('#file'), list = $('#uplist');

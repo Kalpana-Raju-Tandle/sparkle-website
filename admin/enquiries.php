@@ -9,7 +9,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         if (($_POST['do'] ?? '') === 'readall') $pdo->exec('UPDATE enquiries SET is_read=1');
         if (($_POST['do'] ?? '') === 'delete') $pdo->prepare('DELETE FROM enquiries WHERE id=?')->execute([$id]);
     }
-    redirect('enquiries.php');
+    redirect('enquiries');
 }
 $rows = $pdo->query('SELECT * FROM enquiries ORDER BY id DESC LIMIT 300')->fetchAll();
 admin_head('Enquiries', 'enquiries');

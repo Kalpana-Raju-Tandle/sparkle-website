@@ -12,8 +12,8 @@ if (session_status() === PHP_SESSION_NONE) {
 function e(?string $s): string { return htmlspecialchars((string)$s, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8'); }
 function url(string $p = ''): string
 {
-    // Clean page addresses: about.php -> about, index.php -> / (admin keeps .php)
-    if (preg_match('#^/?([a-z0-9-]+)\.php((?:[?\#].*)?)$#i', $p, $m)) $p = ($m[1] === 'index' ? '' : $m[1]) . $m[2];
+    // Clean page addresses: about.php -> about, admin/login.php -> admin/login, index.php -> /
+    if (preg_match('#^/?((?:admin/)?)([a-z0-9-]+)\.php((?:[?\#].*)?)$#i', $p, $m)) $p = $m[1] . ($m[2] === 'index' ? '' : $m[2]) . $m[3];
     return BASE_URL . '/' . ltrim($p, '/');
 }
 function asset(string $p): string

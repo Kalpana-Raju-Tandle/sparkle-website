@@ -8,15 +8,15 @@ $todos = setup_todos();
 $hour = (int)date('G');
 $greet = $hour < 12 ? 'Good morning' : ($hour < 17 ? 'Good afternoon' : 'Good evening');
 $stats = [
-    ['New enquiries', $n('SELECT COUNT(*) FROM enquiries WHERE is_read=0'), 'enquiries.php', 'mail', 'is-hot'],
-    ['Photos', $n("SELECT COUNT(*) FROM gallery WHERE video=''"), 'gallery.php', 'camera', ''],
-    ['Videos', $n("SELECT COUNT(*) FROM gallery WHERE video!=''"), 'gallery.php', 'sun', ''],
-    ['Projects', $n('SELECT COUNT(*) FROM projects'), 'projects.php', 'home', ''],
+    ['New enquiries', $n('SELECT COUNT(*) FROM enquiries WHERE is_read=0'), 'enquiries', 'mail', 'is-hot'],
+    ['Photos', $n("SELECT COUNT(*) FROM gallery WHERE video=''"), 'gallery', 'image', ''],
+    ['Videos', $n("SELECT COUNT(*) FROM gallery WHERE video!=''"), 'gallery', 'video', ''],
+    ['Projects', $n('SELECT COUNT(*) FROM projects'), 'projects', 'home', ''],
 ];
 admin_head('Dashboard', 'index');
 ?>
 <?php if ($todos): ?>
-  <div class="note note--warn"><b>Please update before sharing the site:</b> <?= e(implode(' · ', $todos)) ?>. <a href="<?= url('admin/settings.php') ?>">Open Settings →</a></div>
+  <div class="note note--warn"><?= icon('award', 18) ?><span><b>Finish setting up:</b> <?= e(implode(' · ', $todos)) ?>. <a href="<?= url('admin/settings') ?>">Open Settings →</a></span></div>
 <?php endif; ?>
 
 <section class="welcome">
@@ -25,8 +25,8 @@ admin_head('Dashboard', 'index');
     <h2>Show your latest work <em>today.</em></h2>
     <p>Add site photos and construction videos — they appear on your website the moment they finish uploading.</p>
     <div class="welcome__btns">
-      <a class="btn btn--gold" href="gallery.php"><?= icon('camera', 18) ?> Upload photos &amp; videos</a>
-      <a class="btn btn--ghost" href="enquiries.php"><?= icon('mail', 18) ?> Read enquiries</a>
+      <a class="btn btn--gold" href="gallery"><?= icon('camera', 18) ?> Upload photos &amp; videos</a>
+      <a class="btn btn--ghost" href="enquiries"><?= icon('mail', 18) ?> Read enquiries</a>
     </div>
   </div>
   <div class="welcome__art" aria-hidden="true"><?= icon('home', 120) ?></div>
@@ -43,11 +43,11 @@ admin_head('Dashboard', 'index');
 
 <div class="cols">
   <section class="panel">
-    <div class="panel__head"><h2>Latest uploads</h2><a href="gallery.php">See all →</a></div>
-    <?php if (!$uploads): ?><p class="muted">No photos yet — <a href="gallery.php">upload the first one</a>.</p><?php endif; ?>
+    <div class="panel__head"><h2>Latest uploads</h2><a href="gallery">See all →</a></div>
+    <?php if (!$uploads): ?><p class="muted">No photos yet — <a href="gallery">upload the first one</a>.</p><?php endif; ?>
     <div class="recent">
       <?php foreach ($uploads as $g): ?>
-        <a class="recent__it" href="gallery.php?cat=<?= e($g['category']) ?>" title="<?= e($g['title']) ?>">
+        <a class="recent__it" href="gallery?cat=<?= e($g['category']) ?>" title="<?= e($g['title']) ?>">
           <img src="<?= gthumb($g['file']) ?>" alt="" loading="lazy">
           <?php if ($g['video']): ?><span class="recent__vid">▶</span><?php endif; ?>
           <small><?= e(CATEGORIES[$g['category']] ?? '') ?></small>
@@ -57,7 +57,7 @@ admin_head('Dashboard', 'index');
   </section>
 
   <section class="panel">
-    <div class="panel__head"><h2>Latest enquiries</h2><a href="enquiries.php">See all →</a></div>
+    <div class="panel__head"><h2>Latest enquiries</h2><a href="enquiries">See all →</a></div>
     <?php if (!$recent): ?><p class="muted">Nothing yet — enquiries from the Contact page and the cost estimator will show up here.</p><?php endif; ?>
     <ul class="enqlist">
       <?php foreach ($recent as $r): ?>

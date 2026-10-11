@@ -3,7 +3,7 @@ require __DIR__ . '/_layout.php';
 $pdo = db();
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    if (!csrf_ok()) { flash('Session expired — try again.', 'err'); redirect('settings.php'); }
+    if (!csrf_ok()) { flash('Session expired — try again.', 'err'); redirect('settings'); }
 
     if (($_POST['do'] ?? '') === 'password') {
         $u = $pdo->prepare('SELECT * FROM admins WHERE id=?'); $u->execute([$_SESSION['admin_id']]); $u = $u->fetch();
@@ -17,7 +17,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             session_regenerate_id(true);
             flash('Password updated.');
         }
-        redirect('settings.php');
+        redirect('settings');
     }
 
     $keys = array_diff(array_keys(SETTING_DEFAULTS), ['pw_changed']);
@@ -29,7 +29,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $up->execute([$k, mb_substr($v, 0, 4000)]);
     }
     flash('Settings saved — the website is updated.');
-    redirect('settings.php');
+    redirect('settings');
 }
 
 $S = fn($k) => e(setting($k));
@@ -73,9 +73,9 @@ admin_head('Settings', 'settings');
 <form method="post" class="panel form2"><?= csrf_field() ?><input type="hidden" name="do" value="password">
   <h2>Change admin password</h2>
   <div class="g3">
-    <label>Current password<input type="password" name="current" autocomplete="current-password" required></label>
-    <label>New password (10+ characters)<input type="password" name="new" autocomplete="new-password" minlength="10" required></label>
-    <label>Confirm new password<input type="password" name="confirm" autocomplete="new-password" required></label>
+    <label>Current password<span class="pwfield"><input type="password" name="current" autocomplete="current-password" required><button type="button" class="pweye" aria-label="Show password" title="Show password"><?= icon('eye', 18) ?><?= icon('eyeoff', 18) ?></button></span></label>
+    <label>New password (10+ characters)<span class="pwfield"><input type="password" name="new" id="pwNew" autocomplete="new-password" minlength="10" required><button type="button" class="pweye" aria-label="Show password" title="Show password"><?= icon('eye', 18) ?><?= icon('eyeoff', 18) ?></button></span><small class="pwhint" id="pwLen" aria-live="polite"></small></label>
+    <label>Confirm new password<span class="pwfield"><input type="password" name="confirm" id="pwConfirm" autocomplete="new-password" required><button type="button" class="pweye" aria-label="Show password" title="Show password"><?= icon('eye', 18) ?><?= icon('eyeoff', 18) ?></button></span><small class="pwhint" id="pwMatch" aria-live="polite"></small></label>
   </div>
   <button class="btn">Update password</button>
 </form>
