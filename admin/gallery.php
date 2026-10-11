@@ -21,14 +21,18 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             ->execute([mb_substr(trim((string)$_POST['title']), 0, 120), $cat, $stage, (int)($_POST['sort'] ?? 0), $id]);
         flash('Saved.');
     }
-    redirect('gallery?cat=' . urlencode($_GET['cat'] ?? ''));
+    redirect('gallery?' . http_build_query(array_filter(['cat' => $_GET['cat'] ?? '', 'sort' => $_GET['sort'] ?? ''])));
 }
 
-$cat = $_GET['cat'] ?? '';
-$rows = $cat && isset(CATEGORIES[$cat])
-    ? $pdo->prepare('SELECT * FROM gallery WHERE category=? ORDER BY stage, sort, id') : null;
-if ($rows) { $rows->execute([$cat]); $rows = $rows->fetchAll(); }
-else $rows = $pdo->query('SELECT * FROM gallery ORDER BY category, stage, sort, id')->fetchAll();
+$cat = isset(CATEGORIES[$_GET['cat'] ?? '']) ? $_GET['cat'] : '';
+$sort = ($_GET['sort'] ?? '') === 'site' ? 'site' : 'new';      // default: newest uploads first
+$order = $sort === 'new' ? 'id DESC' : ($cat ? 'stage, sort, id' : 'category, stage, sort, id');
+$st = $pdo->prepare('SELECT * FROM gallery' . ($cat ? ' WHERE category = ?' : '') . " ORDER BY $order");
+$st->execute($cat ? [$cat] : []);
+$rows = $st->fetchAll();
+$just = array_flip(array_map('intval', array_filter(explode(',', (string)($_GET['just'] ?? '')))));   // ids uploaded a moment ago
+$recent = time() - 3 * 86400;                                                                      // "New" = added in the last 3 days
+$q = fn(array $over) => 'gallery?' . http_build_query(array_filter(array_merge(['cat' => $cat, 'sort' => $sort === 'site' ? 'site' : ''], $over)));
 
 $counts = array_column($pdo->query('SELECT category, COUNT(*) n FROM gallery GROUP BY category')->fetchAll(), 'n', 'category');
 $nVideos = (int)$pdo->query("SELECT COUNT(*) FROM gallery WHERE video != ''")->fetchColumn();
@@ -95,24 +99,32 @@ admin_head('Photos & Videos', 'gallery', '<a class="btn btn--gold" href="#upload
 <section class="panel lib">
   <div class="lib__bar">
     <h2>Media library <small><?= count($rows) ?> shown</small></h2>
-    <label class="search"><?= icon('search', 16) ?><input type="search" id="libSearch" placeholder="Search by title…" aria-label="Search by title"></label>
+    <div class="lib__tools">
+      <div class="sortsw" role="group" aria-label="Sort">
+        <a href="<?= e($q(['sort' => ''])) ?>" class="<?= $sort === 'new' ? 'on' : '' ?>"><?= icon('clock', 14) ?> Newest first</a>
+        <a href="<?= e($q(['sort' => 'site'])) ?>" class="<?= $sort === 'site' ? 'on' : '' ?>"><?= icon('grid', 14) ?> Website order</a>
+      </div>
+      <label class="search"><?= icon('search', 16) ?><input type="search" id="libSearch" placeholder="Search by title…" aria-label="Search by title"></label>
+    </div>
   </div>
   <div class="tabs">
-    <a href="gallery" class="<?= !$cat ? 'on' : '' ?>">All <i><?= $total ?></i></a>
-    <?php foreach (CATEGORIES as $k => $v): ?><a href="?cat=<?= $k ?>" class="<?= $cat === $k ? 'on' : '' ?>"><?= e($v) ?> <i><?= (int)($counts[$k] ?? 0) ?></i></a><?php endforeach; ?>
+    <a href="<?= e($q(['cat' => ''])) ?>" class="<?= !$cat ? 'on' : '' ?>">All <i><?= $total ?></i></a>
+    <?php foreach (CATEGORIES as $k => $v): ?><a href="<?= e($q(['cat' => $k])) ?>" class="<?= $cat === $k ? 'on' : '' ?>"><?= e($v) ?> <i><?= (int)($counts[$k] ?? 0) ?></i></a><?php endforeach; ?>
   </div>
   <div class="thumbs" id="libGrid">
-    <?php foreach ($rows as $g): ?>
-      <form class="thumb <?= $g['video'] ? 'is-video' : '' ?>" method="post" action="gallery?cat=<?= e($cat) ?>" data-title="<?= e(mb_strtolower($g['title'])) ?>">
+    <?php foreach ($rows as $g): $added = strtotime($g['created_at'] . ' UTC'); $isJust = isset($just[(int)$g['id']]); ?>
+      <form class="thumb <?= $g['video'] ? 'is-video' : '' ?> <?= $isJust ? 'is-just' : '' ?>" method="post" action="<?= e($q([])) ?>" data-title="<?= e(mb_strtolower($g['title'])) ?>">
         <?= csrf_field() ?><input type="hidden" name="id" value="<?= (int)$g['id'] ?>">
         <div class="thumb__media">
           <img src="<?= gthumb($g['file']) ?>" alt="" loading="lazy">
           <span class="thumb__cat"><?= e(CATEGORIES[$g['category']] ?? '') ?><?= $g['category'] === 'journey' ? ' · ' . sprintf('%02d', (int)$g['stage']) : '' ?></span>
+          <?php if ($isJust): ?><span class="thumb__new thumb__new--just"><?= icon('check', 12) ?> Just uploaded</span><?php elseif ($added > $recent): ?><span class="thumb__new">New</span><?php endif; ?>
           <?php if ($g['video']): ?><a class="thumb__play" href="<?= e(gvideo($g)) ?>" target="_blank" rel="noopener" title="Play video"><?= icon('video', 14) ?> Video</a><?php endif; ?>
           <a class="thumb__open" href="<?= e($g['video'] ? gvideo($g) : gimg($g['file'])) ?>" target="_blank" rel="noopener" title="Open full size"><?= icon('external', 15) ?></a>
         </div>
         <div class="thumb__body">
           <input name="title" class="thumb__title" value="<?= e($g['title']) ?>" aria-label="Title">
+          <small class="thumb__date"><?= icon('clock', 12) ?> Added <?= e(date('d M Y, g:i a', $added)) ?></small>
           <div class="thumb__row">
             <select name="category" class="catsel" aria-label="Section"><?php foreach (CATEGORIES as $k => $v): ?><option value="<?= $k ?>" <?= $g['category'] === $k ? 'selected' : '' ?>><?= e($v) ?></option><?php endforeach; ?></select>
             <label class="ord" title="Display order (lower comes first)">#<input type="number" name="sort" value="<?= (int)$g['sort'] ?>" aria-label="Display order"></label>
@@ -138,6 +150,8 @@ cat.onchange = sync; sync();
 document.querySelectorAll('[name=upCatR]').forEach(r => r.onchange = () => { cat.value = r.value; sync(); });
 document.querySelectorAll('[name=upStageR]').forEach(r => r.onchange = () => { $('#upStage').value = r.value; });
 // A card's Save button lights up once something on that card is edited.
+const firstJust = document.querySelector('.thumb.is-just');
+if (firstJust) setTimeout(() => firstJust.scrollIntoView({ behavior: 'smooth', block: 'center' }), 300);
 const cards0 = document.querySelectorAll('#libGrid .thumb');
 cards0.forEach(f => f.addEventListener('input', () => f.classList.add('is-dirty')));
 const search = $('#libSearch'), cards = [...document.querySelectorAll('#libGrid .thumb')];
@@ -178,13 +192,17 @@ function post(fd, onprogress) {
     x.send(fd);
   });
 }
-function finished(ok) { if (--pending === 0 && ok) setTimeout(() => location.reload(), 1200); }
+const doneIds = [];
+function finished(ok, id) {
+  if (ok && id) doneIds.push(id);
+  if (--pending === 0 && doneIds.length) setTimeout(() => { location.href = 'gallery?just=' + doneIds.join(',') + '#libGrid'; }, 1000);
+}
 
 async function sendPhoto(f) {
   const r = row(f.name); pending++;
   const fd = withOptions(new FormData()); fd.append('photo', f);
   const out = await post(fd, n => r.bar(n / f.size * 100));
-  r.done(out.ok, out.ok ? 'Live on website ✓' : '✕ ' + out.error); finished(out.ok);
+  r.done(out.ok, out.ok ? 'Live on website ✓' : '✕ ' + out.error); finished(out.ok, out.id);
 }
 
 /* Grab a frame from the video in the browser to use as its cover image — this also proves browsers can play it. */
@@ -216,8 +234,8 @@ async function sendVideo(f) {
   const id = [...crypto.getRandomValues(new Uint8Array(12))].map(b => b.toString(16).padStart(2, '0')).join('');
   const total = Math.max(1, Math.ceil(f.size / CHUNK));
   r.msg('Uploading…');
+  let out;
   for (let i = 0; i < total; i++) {
-    let out;
     for (let attempt = 0; attempt < 3; attempt++) {      // retry a piece on a flaky connection
       const fd = new FormData();
       fd.append('upload_id', id); fd.append('index', i); fd.append('total', total);
@@ -228,7 +246,7 @@ async function sendVideo(f) {
     }
     if (!out.ok) { r.done(false, '✕ ' + out.error); return finished(false); }
   }
-  r.bar(100); r.done(true, 'Live on website ✓'); finished(true);
+  r.bar(100); r.done(true, 'Live on website ✓'); finished(true, out.id);
 }
 
 function send(files) {
