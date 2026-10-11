@@ -13,6 +13,13 @@
     input.focus({ preventScroll: true });
   });
 
+  // Login: boxes start read-only so browsers don't pre-fill saved details on page load;
+  // they unlock the moment you tap/click or tab into them.
+  document.querySelectorAll('[data-noautofill]').forEach(i => {
+    const unlock = () => i.removeAttribute('readonly');
+    ['pointerdown', 'focus', 'keydown'].forEach(ev => i.addEventListener(ev, unlock, { once: true }));
+  });
+
   // Settings → Change password: live length and "passwords match" hints.
   const nw = document.getElementById('pwNew'), cf = document.getElementById('pwConfirm');
   if (!nw || !cf) return;

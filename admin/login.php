@@ -49,12 +49,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         <?= csrf_field() ?>
         <div class="ffield">
           <span class="ffield__ic"><?= icon('users', 18) ?></span>
-          <input id="lgUser" name="username" autocomplete="username" required autofocus placeholder=" ">
+          <input id="lgUser" name="username" autocomplete="off" required placeholder=" " readonly data-noautofill>
           <label for="lgUser">Username</label>
         </div>
         <div class="ffield">
           <span class="ffield__ic"><?= icon('key', 18) ?></span>
-          <input id="pw" name="password" type="password" autocomplete="current-password" required placeholder=" ">
+          <input id="pw" name="password" type="password" autocomplete="off" required placeholder=" " readonly data-noautofill>
           <label for="pw">Password</label>
           <button type="button" class="pweye" aria-label="Show password" title="Show password"><?= icon('eye', 18) ?><?= icon('eyeoff', 18) ?></button>
         </div>
