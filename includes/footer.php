@@ -54,6 +54,7 @@
     <div class="ft__mark" aria-hidden="true">SPARKLE</div>
     <div class="ft__bar">
       <span>&copy; <?= date('Y') ?> <?= e(SITE_NAME) ?>. All rights reserved.</span>
+      <span class="ft__pw">Powered by <b>EagleIQ</b></span>
       <div><a href="<?= url('admin/') ?>">Team login</a><button type="button" class="ft__top" aria-label="Back to top" onclick="window.scrollTo({top:0,behavior:'smooth'})"><?= icon('arrow', 18) ?></button></div>
     </div>
   </div>

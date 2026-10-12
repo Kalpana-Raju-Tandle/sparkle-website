@@ -75,6 +75,7 @@ function admin_foot(): void
 {
     echo <<<'HTML'
   </main>
+  <footer class="adm-credit">Powered by <b>EagleIQ</b></footer>
 </div>
 <script>
 (() => {

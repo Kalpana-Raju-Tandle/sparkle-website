@@ -64,6 +64,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     </form>
   </div>
   </section>
+  <p class="adm-credit adm-credit--login">Powered by <b>EagleIQ</b></p>
 </main>
 <script src="<?= asset('js/admin.js') ?>" defer></script>
 </body></html>

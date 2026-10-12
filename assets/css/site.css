@@ -3955,3 +3955,11 @@ body .hero h1>span:last-of-type span,body .hero h1 .l2{color:#7a1825!important}
 .gv__th,.mq__ph,.pl__ph,.mi{position:relative}
 .lightbox video{display:block;max-height:80vh;max-width:min(1200px,92vw);width:auto;margin:auto;border-radius:12px;background:#000;box-shadow:0 30px 80px rgba(0,0,0,.6)}
 .lightbox video[hidden],.lightbox img[hidden]{display:none}
+
+/* "Powered by EagleIQ" credit in the footer bar */
+.ft__pw{display:inline-flex;align-items:center;gap:7px;padding:7px 16px;border-radius:99px;border:1px solid rgba(255,217,138,.28);background:rgba(255,255,255,.05);font-family:var(--head);font-size:.74rem;letter-spacing:.14em;text-transform:uppercase;color:#b79f8e}
+.ft__pw b{font-weight:600;letter-spacing:.12em;background:var(--gold-grad);-webkit-background-clip:text;background-clip:text;color:transparent}
+.ft__bar{justify-content:space-between}
+@media (max-width:700px){.ft__bar{flex-direction:column;align-items:flex-start}.ft__pw{order:3}}
+.ft__pw{border-color:rgba(143,29,44,.28);background:rgba(255,255,255,.55);color:#6f5d52}
+.ft__pw b{background:linear-gradient(90deg,#8f1d2c,#c88a1e);-webkit-background-clip:text;background-clip:text;color:transparent}
