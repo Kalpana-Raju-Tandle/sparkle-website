@@ -2812,6 +2812,12 @@ form.quick input:not([type=range]):not([type=checkbox]):not([type=file]):focus,f
 .gv__top{left:calc(26% + 18px);right:calc(26% + 18px)}
 .gv__cap{left:calc(26% + 24px);max-width:44%}
 }
+/* caption and counter follow the centre photo's real width (it is capped in px, so the % offsets above drifted off the photo) */
+.gv__viewer{--gvw:min(48%,640px)}
+@media (max-width:1000px){.gv__viewer{--gvw:min(66%,400px)}}
+@media (max-width:560px){.gv__viewer{--gvw:72%}}
+.gv__cap{left:calc(50% - var(--gvw) / 2 + 24px);max-width:calc(var(--gvw) - 48px)}
+.gv__top{left:calc(50% - var(--gvw) / 2 + 18px);right:calc(50% - var(--gvw) / 2 + 18px)}
 .gv__chips{display:none!important}
 
 /* =====================================================================

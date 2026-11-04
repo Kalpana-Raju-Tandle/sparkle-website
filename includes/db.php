@@ -115,11 +115,18 @@ function migrate(PDO $pdo, bool $fresh): void
         $pdo->exec("INSERT INTO settings (k, v) VALUES ('journey_v2', '1')");
     }
 
-    // One-off: the original site photos take their stage's name (stages 1–2 keep their own titles).
-    if (!$pdo->query("SELECT 1 FROM settings WHERE k = 'journey_v3'")->fetchColumn()) {
+    // One-off: the original site photos take their stage's name.
+    if (!$pdo->query("SELECT 1 FROM settings WHERE k = 'journey_v4'")->fetchColumn()) {
         $up = $pdo->prepare("UPDATE gallery SET title = ? WHERE category = 'journey' AND stage = ? AND file LIKE 'j-%'");
-        foreach (STAGES as $n => $name) if ($n > 2) $up->execute([$name, $n]);
-        $pdo->exec("INSERT INTO settings (k, v) VALUES ('journey_v3', '1')");
+        foreach (STAGES as $n => $name) $up->execute([$name, $n]);
+        $pdo->exec("INSERT INTO settings (k, v) VALUES ('journey_v4', '1')");
+    }
+
+    // One-off: one photo per stage — drop the extra original photos from the journey (image files stay on disk).
+    if (!$pdo->query("SELECT 1 FROM settings WHERE k = 'journey_v5'")->fetchColumn()) {
+        $extra = ['j-footing-steel.jpg', 'j-walls-columns.jpg', 'j-stair-soffit.jpg', 'j-plaster-triplex.jpg', 'j-near-complete.jpg', 'j-night-handover.jpg'];
+        $pdo->prepare("DELETE FROM gallery WHERE category = 'journey' AND file IN (" . implode(',', array_fill(0, count($extra), '?')) . ")")->execute($extra);
+        $pdo->exec("INSERT INTO settings (k, v) VALUES ('journey_v5', '1')");
     }
 
     // First admin. Password is forced-change nagged until changed in Settings.
