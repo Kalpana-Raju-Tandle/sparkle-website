@@ -12,7 +12,7 @@ $rows = db()->query("SELECT p.*, g.file, g.category, g.video FROM projects p JOI
     <span class="eyebrow eyebrow--light">Projects</span>
     <h1 data-split="hero">Homes we’ve built. <em>Homes we’ve imagined.</em></h1>
     <p class="lead">A selection of completed residences and 3D design concepts from our studio.</p>
-    <ul class="ph__facts"><li><?= icon('pin', 16) ?> Pandavapura, Karnataka</li><li><?= icon('award', 16) ?> Engineer-led sites</li><li><?= icon('rupee', 16) ?> From <?= rupees(starting_rate()) ?>/sq.ft</li></ul>
+    <ul class="ph__facts"><li><?= icon('pin', 16) ?> Mandya, Karnataka</li><li><?= icon('award', 16) ?> Engineer-led sites</li><li><?= icon('rupee', 16) ?> From <?= rupees(starting_rate()) ?>/sq.ft</li></ul>
   </div>
 </section>
 

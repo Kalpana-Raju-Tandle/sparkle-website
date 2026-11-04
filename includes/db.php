@@ -8,13 +8,21 @@ const SETTING_DEFAULTS = [
     'phone_alt'        => '',
     'whatsapp'         => '910000000000',
     'email'            => 'hello@example.com',
-    'address_primary'  => "Sparkle Constructions\nPandavapura, Mandya District\nKarnataka, India",
+    'address_primary'  => "Sparkle Constructions\nMandya, Mandya District\nKarnataka, India",
     'address_secondary'=> '',
     'hours'            => 'Mon – Sat · 9:00 AM – 7:00 PM',
     'price_essential'  => '1999',
-    'price_classic'    => '2299',
-    'price_signature'  => '2599',
-    'client_name'      => 'Founder & Managing Director',
+    'price_classic'    => '2199',
+    'price_signature'  => '2499',
+    'mrp_essential'    => '2100',
+    'mrp_classic'      => '2200',
+    'mrp_signature'    => '2500',
+    'count_completed'  => '75',
+    'count_designs'    => '75',
+    'count_inspected'  => '75',
+    'enquiry_whatsapp' => '918073144110',
+    'wa_greeting'      => "Hi,\nWarm greetings from Sparkle Constructions, Mandya.",
+    'client_name'      => 'Devraj A H',
     'client_role'      => 'Founder, Sparkle Constructions',
     'client_bio'       => "Sparkle Constructions was started with one belief: a family’s home should be built with the same care the family puts into dreaming it. Our founder personally reviews every project’s design, material quality and site progress, and stays reachable from the first sketch to the day of griha pravesh.\n\nWith a focus on sustainable, durable and thoughtfully designed homes, the company serves families across the region with transparent costs and honest timelines.",
     'designer_name'    => 'Lead Designer',
@@ -67,13 +75,51 @@ function migrate(PDO $pdo, bool $fresh): void
     $ins = $pdo->prepare('INSERT OR IGNORE INTO settings (k, v) VALUES (?, ?)');
     foreach (SETTING_DEFAULTS as $k => $v) $ins->execute([$k, $v]);
 
+    // One-off: move existing sites to the Economy / Standard / Premium offer rates.
+    if (!$pdo->query("SELECT 1 FROM settings WHERE k = 'pkg_rates_v2'")->fetchColumn()) {
+        $up = $pdo->prepare('UPDATE settings SET v = ? WHERE k = ?');
+        foreach (['price_essential', 'price_classic', 'price_signature'] as $k) $up->execute([SETTING_DEFAULTS[$k], $k]);
+        $pdo->exec("INSERT INTO settings (k, v) VALUES ('pkg_rates_v2', '1')");
+    }
+
+    if (!(int)$pdo->query('SELECT COUNT(*) FROM gallery')->fetchColumn()) seed_gallery($pdo);
+
+    // One-off: regroup the original site photos into the 15-stage construction journey, in build order.
+    if (!$pdo->query("SELECT 1 FROM settings WHERE k = 'journey_v2'")->fetchColumn()) {
+        $journey = [   // file => [stage, title]
+            'j-site-marking.jpg'      => [1,  'Site marking & layout'],
+            'j-excavation.jpg'        => [2,  'Excavation to hard strata'],
+            'j-footing-steel.jpg'     => [3,  'Footing steel before the pour'],
+            'j-footing-concrete.jpg'  => [3,  'Footing concrete cast'],
+            'j-plinth-blockwork.jpg'  => [4,  'Size stone masonry (SSM)'],
+            'j-walls-columns.jpg'     => [4,  'Size stone masonry with column steel'],
+            'j-plinth-beam.jpg'       => [5,  'Plinth beam steel'],
+            'j-plinth-palms.jpg'      => [6,  'Plinth beam concrete'],
+            'j-floor-concrete.jpg'    => [7,  'Floor concrete finishing after anti-termite treatment'],
+            'j-columns.jpg'           => [8,  'Columns rising'],
+            'j-brick-duplex.jpg'      => [9,  'Brick masonry, upper floors'],
+            'j-walls-interior.jpg'    => [10, 'Block walls'],
+            'j-structure-stair.jpg'   => [11, 'Structure with staircase'],
+            'j-stair-soffit.jpg'      => [11, 'Staircase & niche detailing'],
+            'j-plaster-triplex.jpg'   => [12, 'Exterior plastering'],
+            'j-plaster-exterior.jpg'  => [12, 'Exterior plastering complete'],
+            'j-roof-finish.jpg'       => [13, 'Whitewash finishing'],
+            'j-near-complete.jpg'     => [14, 'Building work completed'],
+            'j-glass-railing.jpg'     => [14, 'Completed home with glass railing'],
+            'j-night-handover.jpg'    => [14, 'Completed home, lit up at night'],
+            'j-griha-pravesh.jpg'     => [15, 'Griha pravesh day'],
+        ];
+        $up = $pdo->prepare("UPDATE gallery SET stage = ?, title = ?, sort = ? WHERE file = ? AND category = 'journey'");
+        $i = 0;
+        foreach ($journey as $file => [$stage, $title]) $up->execute([$stage, $title, $i++, $file]);
+        $pdo->exec("INSERT INTO settings (k, v) VALUES ('journey_v2', '1')");
+    }
+
     // First admin. Password is forced-change nagged until changed in Settings.
     if (!(int)$pdo->query('SELECT COUNT(*) FROM admins')->fetchColumn()) {
         $pdo->prepare('INSERT INTO admins (username, password_hash) VALUES (?, ?)')
             ->execute(['admin', password_hash('Sparkle@2026', PASSWORD_DEFAULT)]);
     }
-
-    if (!(int)$pdo->query('SELECT COUNT(*) FROM gallery')->fetchColumn()) seed_gallery($pdo);
 }
 
 function seed_gallery(PDO $pdo): void

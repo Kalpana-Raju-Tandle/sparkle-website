@@ -254,4 +254,16 @@
     $$('[data-pick]').forEach(b => b.addEventListener('click', () => { pkg = b.dataset.pick; $$('#pkg button').forEach(x => x.classList.toggle('is-on', x.dataset.v === pkg)); calc(); }));
     calc();
   }
+
+  /* enquiry forms: also hand the details to the business WhatsApp, then submit as usual */
+  $$('form[data-wa]').forEach(f => f.addEventListener('submit', () => {
+    const v = n => (f.elements[n]?.value || '').trim();
+    if (v('name').length < 2 || !/^[+\d][\d\s\-()]{7,18}$/.test(v('phone'))) return;   // server shows the errors
+    const greet = document.body.dataset.waGreeting;
+    const lines = [...(greet ? [greet, ''] : []), f.dataset.waTitle || 'New website enquiry', 'Name: ' + v('name'), 'Phone: ' + v('phone')];
+    if (v('email')) lines.push('Email: ' + v('email'));
+    if (v('service')) lines.push('Interested in: ' + v('service'));
+    if (v('message')) lines.push('', v('message'));
+    open(`https://wa.me/${f.dataset.wa}?text=${encodeURIComponent(lines.join('\n'))}`, '_blank', 'noopener');
+  }));
 })();

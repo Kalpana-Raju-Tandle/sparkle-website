@@ -14,7 +14,7 @@ $all = $pdo->query("SELECT * FROM gallery WHERE category != 'team' ORDER BY cate
     <span class="eyebrow eyebrow--light">Gallery</span>
     <h1 data-split="hero">From foundation to <em>finishing.</em></h1>
     <p class="lead">Follow a home’s journey in the order it’s built — then browse our completed homes and designs.</p>
-    <ul class="ph__facts"><li><?= icon('pin', 16) ?> Pandavapura, Karnataka</li><li><?= icon('award', 16) ?> Engineer-led sites</li><li><?= icon('rupee', 16) ?> From <?= rupees(starting_rate()) ?>/sq.ft</li></ul>
+    <ul class="ph__facts"><li><?= icon('pin', 16) ?> Mandya, Karnataka</li><li><?= icon('award', 16) ?> Engineer-led sites</li><li><?= icon('rupee', 16) ?> From <?= rupees(starting_rate()) ?>/sq.ft</li></ul>
   </div>
 </section>
 
@@ -23,13 +23,13 @@ $all = $pdo->query("SELECT * FROM gallery WHERE category != 'team' ORDER BY cate
   <div class="container">
     <header class="gl-head rv">
       <p class="pgk"><i></i>Construction journey<i></i></p>
-      <h2>Eight stages. <em>Zero guesswork.</em></h2>
+      <h2><?= count(STAGES) ?> stages. <em>Zero guesswork.</em></h2>
       <p class="gl-head__p">Watch real Sparkle sites progress in the order they&rsquo;re built &mdash; from the first marking on bare ground to the keys in your hand.</p>
       <ul class="gl-stats">
         <li><b><?= count($journey) ?></b><span>site photos</span></li>
-        <li><b>08</b><span>build stages</span></li>
-        <li><b><?= (int)$pdo->query("SELECT COUNT(*) FROM gallery WHERE category='completed'")->fetchColumn() ?></b><span>finished homes</span></li>
-        <li><b><?= (int)$pdo->query("SELECT COUNT(*) FROM gallery WHERE category='designs'")->fetchColumn() ?></b><span>3D designs</span></li>
+        <li><b><?= sprintf('%02d', count(STAGES)) ?></b><span>build stages</span></li>
+        <li><b><?= (int)setting('count_completed') ?></b><span>finished homes</span></li>
+        <li><b><?= (int)setting('count_designs') ?></b><span>3D designs</span></li>
       </ul>
     </header>
 

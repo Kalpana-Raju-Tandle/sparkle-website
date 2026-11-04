@@ -70,21 +70,25 @@ function phone_numbers(): array
     }
     return $out;
 }
-/** Google Maps search link for an address block (the first line, the business name, is skipped). */
-function maps_href(string $address): string
+/** Map search text for an address block (the first line, the business name, is skipped). */
+function maps_query(string $address): string
 {
     $lines = array_values(array_filter(array_map('trim', explode("\n", $address))));
-    return 'https://www.google.com/maps/search/?api=1&query=' . rawurlencode(implode(', ', array_slice($lines, 1)) ?: $address);
+    return implode(', ', array_slice($lines, 1)) ?: $address;
 }
-function wa_href(string $text = ''): string
+function maps_href(string $address): string { return 'https://www.google.com/maps/search/?api=1&query=' . rawurlencode(maps_query($address)); }
+function maps_embed(string $address): string { return 'https://maps.google.com/maps?q=' . rawurlencode(maps_query($address)) . '&z=15&output=embed'; }
+/** WhatsApp chat link; the message defaults to the greeting from Settings. */
+function wa_href(?string $text = null): string
 {
+    $text ??= setting('wa_greeting');
     return 'https://wa.me/' . preg_replace('/\D/', '', setting('whatsapp')) . ($text ? '?text=' . rawurlencode($text) : '');
 }
 
 function packages(): array
 {
     $out = [];
-    foreach (PACKAGES as $k => $p) $out[$k] = $p + ['rate' => (int)setting('price_' . $k)];
+    foreach (PACKAGES as $k => $p) $out[$k] = $p + ['rate' => (int)setting('price_' . $k), 'was' => (int)setting('mrp_' . $k)];
     return $out;
 }
 function starting_rate(): int { return min(array_map(fn($p) => $p['rate'], packages())); }

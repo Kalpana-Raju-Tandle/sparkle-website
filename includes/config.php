@@ -32,14 +32,21 @@ define('SITE_NAME', 'Sparkle Constructions');
 
 // Construction stages, in build order (used by the gallery "journey" slider).
 const STAGES = [
-    1 => 'Site Marking',
-    2 => 'Excavation',
-    3 => 'Footing & Steel',
-    4 => 'Plinth & Columns',
-    5 => 'Walls & Slabs',
-    6 => 'Plastering',
-    7 => 'Finishing',
-    8 => 'Handover',
+    1  => 'Site Marking',
+    2  => 'Excavation',
+    3  => 'Footing Concrete',
+    4  => 'Size Stone Masonry (SSM)',
+    5  => 'Plinth Beam Steel',
+    6  => 'Plinth Beam Concrete',
+    7  => 'Floor Concrete & Anti-Termite Treatment',
+    8  => 'Column Rising',
+    9  => 'Brick Masonry',
+    10 => 'Block Walls',
+    11 => 'Structure with Staircase',
+    12 => 'Exterior Plastering',
+    13 => 'Whitewash Finishing',
+    14 => 'Building Completion',
+    15 => 'Inauguration / Griha Pravesh',
 ];
 
 const CATEGORIES = [
@@ -49,10 +56,10 @@ const CATEGORIES = [
     'team'      => 'Our Team',
 ];
 
-// Package details (rates themselves are editable in Settings).
+// Package details (rates themselves are editable in Settings; keys stay as-is because the rate settings use them).
 const PACKAGES = [
     'essential' => [
-        'name' => 'Essential',
+        'name' => 'Economy',
         'tag'  => 'Smart, honest value',
         'items' => [
             'Complete structural construction',
@@ -63,10 +70,10 @@ const PACKAGES = [
         ],
     ],
     'classic' => [
-        'name' => 'Classic',
+        'name' => 'Standard',
         'tag'  => 'Our most chosen',
         'items' => [
-            'Everything in Essential',
+            'Everything in Economy',
             '3D elevation & floor plan design',
             'Upgraded tiles & fittings',
             'Wooden doors & window frames',
@@ -74,10 +81,10 @@ const PACKAGES = [
         ],
     ],
     'signature' => [
-        'name' => 'Signature',
+        'name' => 'Premium',
         'tag'  => 'Fully tailored luxury',
         'items' => [
-            'Everything in Classic',
+            'Everything in Standard',
             'Premium cladding & elevation work',
             'Designer lighting & false ceilings',
             'Modular-ready kitchen & wardrobes',

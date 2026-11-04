@@ -27,7 +27,7 @@ $steps = [['calendar', 'Consult', 'We listen to your plot, family and budget.'],
     <p class="phero__lead">From the first sketch to the final coat of paint, one accountable team designs, engineers and builds your home — with transparent pricing at every step.</p>
     <div class="phero__chips">
       <div><b>6</b><span>Core services</span></div>
-      <div><b>8</b><span>Photographed build stages</span></div>
+      <div><b><?= count(STAGES) ?></b><span>Photographed build stages</span></div>
       <div><b><?= rupees(starting_rate()) ?></b><span>Starting per sq.ft</span></div>
     </div>
   </div>

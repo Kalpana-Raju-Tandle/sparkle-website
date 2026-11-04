@@ -13,8 +13,8 @@ function initials(string $n): string
 ?>
 
 <?php
-  $nHomes   = (int)db()->query("SELECT COUNT(*) FROM gallery WHERE category='completed'")->fetchColumn();
-  $nDesigns = (int)db()->query("SELECT COUNT(*) FROM gallery WHERE category='designs'")->fetchColumn();
+  $nHomes   = (int)setting('count_completed');
+  $nDesigns = (int)setting('count_designs');
 ?>
 <section class="page-hero ab-hero" style="--bg:url('<?= asset('img/hero-3.jpg') ?>')">
   <div class="container ab-hero__in" data-w="ABOUT">
@@ -36,7 +36,7 @@ function initials(string $n): string
     <ul class="ab-hero__stats">
       <li><b><?= $nHomes ?></b><span>Completed homes</span></li>
       <li><b><?= $nDesigns ?></b><span>3D designs</span></li>
-      <li><b>08</b><span>Inspected stages</span></li>
+      <li><b><?= (int)setting('count_inspected') ?></b><span>Inspected sites</span></li>
       <li><b><?= rupees(starting_rate()) ?></b><span>Starting / sq.ft</span></li>
     </ul>
   </div>
@@ -55,8 +55,8 @@ function initials(string $n): string
     <div class="ab__copy rv">
       <p class="pgk"><i></i>Our story</p>
       <h2>Building sustainable homes for <em>future generations</em></h2>
-      <p>Sparkle Constructions began with a simple frustration: too many families lose money, time and peace of mind to builders who over-promise and under-deliver. We set out to do the opposite &mdash; fixed pricing, qualified supervision and proof of progress at every stage.</p>
-      <p>&ldquo;Sustainable&rdquo; for us means homes that use materials wisely, stay cool and bright through good design, and stand strong for decades so the next generation inherits a home, not a repair bill.</p>
+      <p>Sparkle Constructions is a Mandya-based design-and-build company. From foundation to finishing, every home is built by our own team under a qualified site engineer, using tested materials and approved drawings.</p>
+      <p>Fixed, itemised pricing and stage-wise photo updates mean you always know what is being built, what it costs and when it will be ready.</p>
       <ul class="ab__pills"><li><?= icon('check', 14) ?> Fixed pricing</li><li><?= icon('check', 14) ?> Qualified supervision</li><li><?= icon('check', 14) ?> Proof at every stage</li></ul>
       <a class="btn btn--lg" href="<?= url('projects.php') ?>">See our projects <?= icon('arrow', 18) ?></a>
     </div>
@@ -179,9 +179,9 @@ function initials(string $n): string
         </ul>
       </div>
       <article class="ab__des rv">
-        <figure class="ab__ph ab__ph--g"><span><?= e(initials(setting('designer_name'))) ?></span><i class="ab__ring" aria-hidden="true"></i></figure>
+        <figure class="ab__ph ab__ph--g"><span><?= setting('designer_name') !== '' ? e(initials(setting('designer_name'))) : icon('pen', 56) ?></span><i class="ab__ring" aria-hidden="true"></i></figure>
         <p class="ab__role ab__role--l">Our designer</p>
-        <h3><?= e(setting('designer_name')) ?></h3>
+        <?php if (setting('designer_name') !== ''): ?><h3><?= e(setting('designer_name')) ?></h3><?php endif; ?>
         <p class="ab__rl"><?= e(setting('designer_role')) ?></p>
         <div class="ab__bio ab__bio--l"><?= nl2p(setting('designer_bio')) ?></div>
         <a class="btn btn--lg" href="<?= url('projects.php') ?>">See the designs <?= icon('arrow', 18) ?></a>

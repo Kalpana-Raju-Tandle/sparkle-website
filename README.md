@@ -19,7 +19,7 @@ Starter login: **admin / Sparkle@2026** → change it immediately in *Settings �
 - **Photos & Videos** — drag & drop photos or videos (MP4/MOV/WebM, sent in pieces so large clips work), choose Construction-journey stage / Completed / 3D Designs; live instantly.
 - **Projects** — titles, type, featured flag (no locations shown).
 - **Enquiries** — contact-form and estimator leads (also emailed if an email is set).
-- **Settings** — phone, WhatsApp, email, **Pandavapura primary address**, package rates (₹1,999 start), founder & designer profiles.
+- **Settings** — phone, WhatsApp, email, **Mandya primary address** (Pandavapura secondary), package rates (₹1,999 start), founder & designer profiles.
 
 ## Structure
 `index, about, services, projects, gallery, pricing, contact .php` · `includes/` (config, db, helpers, header/footer) · `admin/` · `assets/` · `uploads/`

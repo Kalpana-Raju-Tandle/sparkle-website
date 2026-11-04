@@ -6,8 +6,8 @@ require __DIR__ . '/includes/header.php';
 $pdo = db();
 $featured = $pdo->query("SELECT p.*, g.file, g.video FROM projects p LEFT JOIN gallery g ON g.id = p.gallery_id WHERE p.featured = 1 ORDER BY p.sort LIMIT 5")->fetchAll();
 $counts = [
-    'completed' => (int)$pdo->query("SELECT COUNT(*) FROM gallery WHERE category='completed'")->fetchColumn(),
-    'designs'   => (int)$pdo->query("SELECT COUNT(*) FROM gallery WHERE category='designs'")->fetchColumn(),
+    'completed' => (int)setting('count_completed'),
+    'designs'   => (int)setting('count_designs'),
 ];
 $stageImgs = $pdo->query("SELECT * FROM gallery WHERE id IN (SELECT MIN(id) FROM gallery WHERE category='journey' GROUP BY stage) ORDER BY stage")->fetchAll();
 ?>
@@ -24,9 +24,9 @@ $stageImgs = $pdo->query("SELECT * FROM gallery WHERE id IN (SELECT MIN(id) FROM
 
   <div class="container hero__main">
     <div class="hero__copy">
-      <p class="hero__kicker"><span></span>Pandavapura · Karnataka</p>
+      <p class="hero__kicker"><span></span>Mandya · Karnataka</p>
       <h1><span class="h1-a">Building</span> <em>Sustainable</em><br><span class="h1-b">Homes for Future Generations</span></h1>
-      <p class="hero__lead">Thoughtfully designed, honestly priced and engineered on site — from the first line on your plot to the day you light the lamp at griha pravesh.</p>
+      <p class="hero__lead">Thoughtfully designed, honestly priced and engineered on site from the first line on your plot to the day you light the lamp at griha pravesh.</p>
       <div class="hero__btns">
         <a class="btn btn--gold btn--lg" href="<?= url('pricing.php#estimate') ?>">Estimate My Home <?= icon('arrow', 18) ?></a>
         <a class="btn btn--glass btn--lg" href="<?= url('projects.php') ?>">View Our Projects</a>
@@ -50,9 +50,10 @@ $stageImgs = $pdo->query("SELECT * FROM gallery WHERE id IN (SELECT MIN(id) FROM
 
 <!-- Quick enquiry bar -->
 <div class="container">
-  <form class="quick" method="post" action="<?= url('contact.php') ?>">
+  <form class="quick" method="post" action="<?= url('contact.php') ?>" data-wa="<?= e(setting('enquiry_whatsapp')) ?>" data-wa-title="Call request from website">
     <?= csrf_field() ?>
     <input type="hidden" name="source" value="contact">
+    <input type="hidden" name="back" value="home">
     <input class="hp" type="text" name="website" tabindex="-1" autocomplete="off" aria-hidden="true">
     <div class="quick__title"><b>Get a free consultation</b><span>We’ll call you back shortly</span></div>
     <input name="name" placeholder="Your name" required autocomplete="name" aria-label="Your name">
@@ -296,9 +297,9 @@ $stageImgs = $pdo->query("SELECT * FROM gallery WHERE id IN (SELECT MIN(id) FROM
         <h2><span class="l1">From foundation to finishing</span><span class="l2">see <em>every stage</em></span></h2>
       </div>
       <div class="jr__right">
-        <span class="jr__big" aria-hidden="true">08</span>
-        <p>Understand exactly how your home is built — eight stages, what happens in each one, and how we check the work before moving on.</p>
-        <div class="jr__dots" aria-label="8 stages"><i class="on"></i><i></i><i></i><i></i><i></i><i></i><i></i><i class="end"></i><span>8 stages</span></div>
+        <span class="jr__big" aria-hidden="true"><?= sprintf('%02d', count(STAGES)) ?></span>
+        <p>Understand exactly how your home is built — <?= count(STAGES) ?> stages, what happens in each one, and how we check the work before moving on.</p>
+        <div class="jr__dots" aria-label="<?= count(STAGES) ?> stages"><i class="on"></i><?= str_repeat('<i></i>', count(STAGES) - 2) ?><i class="end"></i><span><?= count(STAGES) ?> stages</span></div>
       </div>
     </header>
 
@@ -393,7 +394,7 @@ $stageImgs = $pdo->query("SELECT * FROM gallery WHERE id IN (SELECT MIN(id) FROM
       <article class="wx__tile wx__tile--r rv"><em class="wx__lbl"><b>03</b>Planet</em><span class="wx__ic"><?= icon('leaf', 26) ?></span><h3>Sustainable by design</h3><p>Efficient layouts and durable materials that cut long-term costs.</p></article>
       <article class="wx__tile wx__tile--stat rv">
         <em class="wx__lbl wx__lbl--d">By the numbers</em>
-        <div class="wx__num"><b>08</b><span>stages, each checked<br>&amp; signed off</span></div>
+        <div class="wx__num"><b><?= sprintf('%02d', count(STAGES)) ?></b><span>stages, each checked<br>&amp; signed off</span></div>
         <div class="wx__num"><b><?= rupees(starting_rate()) ?><small>/sq.ft</small></b><span>starting price,<br>no hidden add-ons</span></div>
         <a href="<?= url('pricing.php') ?>" class="wx__go">See packages <?= icon('arrow', 16) ?></a>
       </article>
@@ -425,7 +426,7 @@ $stageImgs = $pdo->query("SELECT * FROM gallery WHERE id IN (SELECT MIN(id) FROM
             <div class="pk__nm"><small><?= e($p['tag']) ?></small><h3><?= e($p['name']) ?></h3></div>
           </div>
           <div class="pk__body">
-            <div class="pk__price"><span class="pk__from">From</span><b><?= rupees($p['rate']) ?></b><span>/ sq.ft</span></div>
+            <div class="pk__price"><span class="pk__from">From</span><?php if ($p['was'] > $p['rate']): ?><s class="pk__was"><?= rupees($p['was']) ?></s><?php endif; ?><b><?= rupees($p['rate']) ?></b><span>/ sq.ft</span></div>
             <ul class="pk__list">
               <?php foreach (array_slice($p['items'], 0, 4) as $it): ?><li><i></i><?= e($it) ?></li><?php endforeach; ?>
             </ul>

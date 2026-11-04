@@ -7,7 +7,7 @@ $old = ['name' => '', 'phone' => '', 'email' => '', 'service' => '', 'message' =
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     foreach ($old as $k => $_) $old[$k] = trim((string)($_POST[$k] ?? ''));
     $source = in_array($_POST['source'] ?? '', ['contact', 'estimate'], true) ? $_POST['source'] : 'contact';
-    $back = $source === 'estimate' ? 'pricing.php#estimate' : 'contact.php';
+    $back = $source === 'estimate' ? 'pricing.php#estimate' : (($_POST['back'] ?? '') === 'home' ? 'index.php' : 'contact.php');
 
     if (!csrf_ok()) $errors[] = 'Your session expired — please try again.';
     elseif (($_POST['website'] ?? '') !== '') redirect(url($back));            // honeypot
@@ -37,7 +37,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
 $active = 'contact';
 $title = 'Contact';
-$desc = 'Visit Sparkle Constructions in Pandavapura, call us or send an enquiry for a free consultation.';
+$desc = 'Visit Sparkle Constructions in Mandya or Pandavapura, call us or send an enquiry for a free consultation.';
 $prefill = trim((string)($_GET['service'] ?? ''));
 if (!$old['service'] && $prefill) $old['service'] = $prefill;
 require __DIR__ . '/includes/header.php';
@@ -48,7 +48,7 @@ require __DIR__ . '/includes/header.php';
     <span class="eyebrow eyebrow--light">Contact</span>
     <h1 data-split="hero">Let’s talk about <em>your home.</em></h1>
     <p class="lead">Free consultation. No pressure. A clear answer on cost and timeline.</p>
-    <ul class="ph__facts"><li><?= icon('pin', 16) ?> Pandavapura, Karnataka</li><li><?= icon('award', 16) ?> Engineer-led sites</li><li><?= icon('rupee', 16) ?> From <?= rupees(starting_rate()) ?>/sq.ft</li></ul>
+    <ul class="ph__facts"><li><?= icon('pin', 16) ?> Mandya, Karnataka</li><li><?= icon('award', 16) ?> Engineer-led sites</li><li><?= icon('rupee', 16) ?> From <?= rupees(starting_rate()) ?>/sq.ft</li></ul>
   </div>
 </section>
 
@@ -57,22 +57,22 @@ require __DIR__ . '/includes/header.php';
     <div class="contact__info reveal">
       <p class="pgk"><i></i>Find us</p><h2>Visit our <em>office</em></h2>
       <div class="infocard infocard--primary">
-        <span class="pill">Primary address</span>
+        <span class="pill">Main office</span>
         <address><?= nl2br(e(setting('address_primary'))) ?></address>
         <a class="link" target="_blank" rel="noopener" href="<?= e(maps_href(setting('address_primary'))) ?>">Get directions →</a>
       </div>
       <?php if (setting('address_secondary')): ?>
-        <div class="infocard"><span class="pill pill--alt">Other office</span><address><?= nl2br(e(setting('address_secondary'))) ?></address><a class="link" target="_blank" rel="noopener" href="<?= e(maps_href(setting('address_secondary'))) ?>">Get directions →</a></div>
+        <div class="infocard"><span class="pill pill--alt">Branch office</span><address><?= nl2br(e(setting('address_secondary'))) ?></address><a class="link" target="_blank" rel="noopener" href="<?= e(maps_href(setting('address_secondary'))) ?>">Get directions →</a></div>
       <?php endif; ?>
       <ul class="reach">
         <li><span class="ri"><?= icon('phone', 22) ?></span><div><small>Call</small><?php foreach (phone_numbers() as $i => $p): ?><?= $i ? '<br>' : '' ?><a href="<?= e($p['href']) ?>"><?= e($p['label']) ?></a><?php endforeach; ?></div></li>
-        <li><span class="ri ri--wa"><?= icon('whatsapp', 24) ?></span><div><small>WhatsApp</small><a target="_blank" rel="noopener" href="<?= e(wa_href('Hi Sparkle Constructions!')) ?>">Chat with us</a></div></li>
+        <li><span class="ri ri--wa"><?= icon('whatsapp', 24) ?></span><div><small>WhatsApp</small><a target="_blank" rel="noopener" href="<?= e(wa_href()) ?>">Chat with us</a></div></li>
         <li><span class="ri"><?= icon('mail', 22) ?></span><div><small>Email</small><a href="mailto:<?= e(setting('email')) ?>"><?= e(setting('email')) ?></a></div></li>
         <li><span class="ri"><?= icon('clock', 22) ?></span><div><small>Hours</small><?= e(setting('hours')) ?></div></li>
       </ul>
     </div>
 
-    <form class="form reveal" method="post" action="<?= url('contact.php') ?>" novalidate>
+    <form class="form reveal" method="post" action="<?= url('contact.php') ?>" novalidate data-wa="<?= e(setting('enquiry_whatsapp')) ?>">
       <p class="pgk"><i></i>Free consultation</p><h2>Send an <em>enquiry</em></h2>
       <?php if ($errors): ?><ul class="form__errors"><?php foreach ($errors as $er): ?><li><?= e($er) ?></li><?php endforeach; ?></ul><?php endif; ?>
       <?= csrf_field() ?>
@@ -97,7 +97,7 @@ require __DIR__ . '/includes/header.php';
 </section>
 
 <section class="sheet ct-map">
-  <iframe title="Map of Pandavapura" loading="lazy" referrerpolicy="no-referrer-when-downgrade"
-    src="https://maps.google.com/maps?q=Pandavapura%2C%20Karnataka&amp;z=13&amp;output=embed"></iframe>
+  <iframe title="Map to our office" loading="lazy" referrerpolicy="no-referrer-when-downgrade"
+    src="<?= e(maps_embed(setting('address_primary'))) ?>"></iframe>
 </section>
 <?php require __DIR__ . '/includes/footer.php'; ?>

@@ -27,7 +27,7 @@
       <div class="ft__brand">
         <span class="logo-plate"><img src="<?= asset('img/logo.png') ?>" alt="<?= e(SITE_NAME) ?>" loading="lazy" width="715" height="237"></span>
         <p>Building sustainable homes for future generations &mdash; <em>designed with care, engineered on site, delivered with honesty.</em></p>
-        <a class="ft__wa" href="<?= e(wa_href('Hi Sparkle Constructions!')) ?>" target="_blank" rel="noopener"><span><?= icon('whatsapp', 17) ?></span> Chat on WhatsApp</a>
+        <a class="ft__wa" href="<?= e(wa_href()) ?>" target="_blank" rel="noopener"><span><?= icon('whatsapp', 17) ?></span> Chat on WhatsApp</a>
       </div>
       <nav class="ft__col" aria-label="Explore">
         <h3>Explore</h3>
@@ -41,8 +41,8 @@
       </nav>
       <div class="ft__col">
         <h3>Visit us</h3>
-        <div class="ft__it"><span><?= icon('pin', 18) ?></span><address><?= nl2br(e(setting('address_primary'))) ?></address></div>
-        <?php if (setting('address_secondary')): ?><div class="ft__it ft__it--m"><span><?= icon('pin', 18) ?></span><address><?= nl2br(e(setting('address_secondary'))) ?></address></div><?php endif; ?>
+        <div class="ft__it"><span><?= icon('pin', 18) ?></span><div><small class="ft__lbl">Main office</small><address><?= nl2br(e(setting('address_primary'))) ?></address></div></div>
+        <?php if (setting('address_secondary')): ?><div class="ft__it ft__it--m"><span><?= icon('pin', 18) ?></span><div><small class="ft__lbl">Branch office</small><address><?= nl2br(e(setting('address_secondary'))) ?></address></div></div><?php endif; ?>
       </div>
       <div class="ft__col">
         <h3>Talk to us</h3>
@@ -60,7 +60,7 @@
   </div>
 </footer>
 
-<a class="wa-float" href="<?= e(wa_href('Hi Sparkle Constructions!')) ?>" target="_blank" rel="noopener" aria-label="Chat on WhatsApp">
+<a class="wa-float" href="<?= e(wa_href()) ?>" target="_blank" rel="noopener" aria-label="Chat on WhatsApp">
   <svg viewBox="0 0 32 32" width="30" height="30" aria-hidden="true"><path fill="#fff" d="M16 3C9.4 3 4 8.3 4 14.9c0 2.4.7 4.6 1.9 6.5L4 29l7.8-1.9a12 12 0 0 0 4.2.8c6.6 0 12-5.3 12-11.9S22.6 3 16 3zm0 21.800c-1.300 0-2.600-.3-3.700-.9l-.5-.3-4.600 1.100 1.200-4.400-.3-.5a9.700 9.700 0 0 1-1.500-5.200C6.600 9.700 10.800 5.600 16 5.600s9.400 4.100 9.400 9.300-4.200 9.900-9.400 9.900zm5.400-7.300c-.3-.1-1.700-.8-2-.9s-.5-.1-.7.1-.8.900-.9 1.100-.3.200-.6.100a7.800 7.800 0 0 1-3.900-3.400c-.3-.5.300-.5.800-1.500.1-.2 0-.4 0-.5l-.9-2.100c-.2-.5-.5-.5-.7-.5h-.6c-.2 0-.5.100-.8.400s-1 1-1 2.400 1 2.800 1.200 3c.1.200 2 3.100 4.900 4.300 1.800.8 2.500.8 3.400.7.600-.1 1.700-.7 2-1.400s.2-1.200.2-1.400-.2-.2-.5-.4z"/></svg>
 </a>
 

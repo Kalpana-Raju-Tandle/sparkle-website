@@ -11,7 +11,7 @@ $pk = packages();
     <span class="eyebrow eyebrow--light">Pricing</span>
     <h1 data-split="hero">Construction from <span class="hl"><?= rupees(starting_rate()) ?></span> per sq.ft.</h1>
     <p class="lead">Clear packages. Itemised quotes. No hidden surprises.</p>
-    <ul class="ph__facts"><li><?= icon('pin', 16) ?> Pandavapura, Karnataka</li><li><?= icon('award', 16) ?> Engineer-led sites</li><li><?= icon('rupee', 16) ?> From <?= rupees(starting_rate()) ?>/sq.ft</li></ul>
+    <ul class="ph__facts"><li><?= icon('pin', 16) ?> Mandya, Karnataka</li><li><?= icon('award', 16) ?> Engineer-led sites</li><li><?= icon('rupee', 16) ?> From <?= rupees(starting_rate()) ?>/sq.ft</li></ul>
   </div>
 </section>
 
@@ -34,7 +34,7 @@ $pk = packages();
             <div class="pk__nm"><small><?= e($p['tag']) ?></small><h3><?= e($p['name']) ?></h3></div>
           </div>
           <div class="pk__body">
-            <div class="pk__price"><span class="pk__from"><?= $key === 'essential' ? 'From' : 'Rate' ?></span><b><?= rupees($p['rate']) ?></b><span>/ sq.ft</span></div>
+            <div class="pk__price"><span class="pk__from"><?= $key === 'essential' ? 'From' : 'Rate' ?></span><?php if ($p['was'] > $p['rate']): ?><s class="pk__was"><?= rupees($p['was']) ?></s><?php endif; ?><b><?= rupees($p['rate']) ?></b><span>/ sq.ft</span></div>
             <ul class="pk__list"><?php foreach ($p['items'] as $it): ?><li><i></i><?= e($it) ?></li><?php endforeach; ?></ul>
             <a class="pk__cta" href="#estimate" data-pick="<?= e($key) ?>"><span>Estimate with <?= e($p['name']) ?></span><em><?= icon('arrow', 18) ?></em></a>
           </div>
@@ -69,7 +69,7 @@ $pk = packages();
         <span>Indicative construction cost</span>
         <strong id="total">₹0</strong>
         <small id="detail"></small>
-        <form method="post" action="<?= url('contact.php') ?>" class="est__form">
+        <form method="post" action="<?= url('contact.php') ?>" class="est__form" data-wa="<?= e(setting('enquiry_whatsapp')) ?>" data-wa-title="Quote request from website">
           <?= csrf_field() ?>
           <input type="hidden" name="source" value="estimate">
           <input type="hidden" name="service" value="New home construction">

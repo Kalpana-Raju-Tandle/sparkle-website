@@ -1,7 +1,7 @@
 <?php
 require_once __DIR__ . '/helpers.php';
 $title  = isset($title) ? $title . ' · ' . SITE_NAME : SITE_NAME . ' — Building Sustainable Homes for Future Generations';
-$desc   = $desc ?? 'Sparkle Constructions builds sustainable, beautifully designed homes in Pandavapura and across Karnataka. Transparent pricing from ₹' . number_format(starting_rate()) . ' per sq.ft.';
+$desc   = $desc ?? 'Sparkle Constructions builds sustainable, beautifully designed homes in Mandya, Pandavapura and across Karnataka. Transparent pricing from ₹' . number_format(starting_rate()) . ' per sq.ft.';
 $active = $active ?? '';
 $nav = [
     'index'    => ['Home', 'index.php'],
@@ -15,7 +15,7 @@ $nav = [
 $flash = flash();
 // Top bar shows the last line of the primary address, without the PIN code.
 $lines = array_values(array_filter(array_map('trim', explode("\n", setting('address_primary')))));
-$place = preg_replace('/\s*[-–]\s*\d{6}\s*$/u', '', end($lines) ?: 'Pandavapura');
+$place = preg_replace('/\s*[-–]\s*\d{6}\s*$/u', '', end($lines) ?: 'Mandya');
 ?><!doctype html>
 <html lang="en">
 <head>
@@ -35,10 +35,10 @@ $place = preg_replace('/\s*[-–]\s*\d{6}\s*$/u', '', end($lines) ?: 'Pandavapur
 <script type="application/ld+json"><?= json_encode([
     '@context' => 'https://schema.org', '@type' => 'GeneralContractor', 'name' => SITE_NAME,
     'image' => url('assets/img/hero-1.jpg'), 'telephone' => setting('phone'),
-    'address' => ['@type' => 'PostalAddress', 'addressLocality' => 'Pandavapura', 'addressRegion' => 'Karnataka', 'addressCountry' => 'IN'],
+    'address' => ['@type' => 'PostalAddress', 'addressLocality' => 'Mandya', 'addressRegion' => 'Karnataka', 'addressCountry' => 'IN'],
 ], JSON_UNESCAPED_SLASHES) ?></script>
 </head>
-<body class="<?= e($bodyClass ?? '') ?>">
+<body class="<?= e($bodyClass ?? '') ?>" data-wa-greeting="<?= e(setting('wa_greeting')) ?>">
 <a class="skip" href="#main">Skip to content</a>
 <script>document.documentElement.classList.add('js')</script>
 

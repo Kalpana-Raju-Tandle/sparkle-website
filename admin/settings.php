@@ -25,7 +25,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     foreach ($keys as $k) {
         if (!isset($_POST[$k])) continue;
         $v = trim((string)$_POST[$k]);
-        if (str_starts_with($k, 'price_')) $v = (string)max(0, (int)preg_replace('/\D/', '', $v));
+        if ($k === 'enquiry_whatsapp') $v = preg_replace('/\D/', '', $v);
+        if (str_starts_with($k, 'price_') || str_starts_with($k, 'mrp_') || str_starts_with($k, 'count_')) $v = (string)max(0, (int)preg_replace('/\D/', '', $v));
         $up->execute([$k, mb_substr($v, 0, 4000)]);
     }
     flash('Settings saved — the website is updated.');
@@ -41,17 +42,29 @@ admin_head('Settings', 'settings');
     <label>Phone (shown on website)<input name="phone" value="<?= $S('phone') ?>"></label>
     <label>Other phone numbers (optional, separate with / or ,)<input name="phone_alt" value="<?= $S('phone_alt') ?>"></label>
     <label>WhatsApp number (digits with country code, e.g. 919876543210)<input name="whatsapp" value="<?= $S('whatsapp') ?>"></label>
+    <label>Enquiry WhatsApp (new enquiries & call requests are sent here)<input name="enquiry_whatsapp" value="<?= $S('enquiry_whatsapp') ?>"></label>
     <label>Email (enquiries are also emailed here)<input name="email" type="email" value="<?= $S('email') ?>"></label>
     <label>Opening hours<input name="hours" value="<?= $S('hours') ?>"></label>
   </div>
-  <label>Primary address — Pandavapura <small>(first line = name, last line is shown in the top bar)</small><textarea name="address_primary" rows="3"><?= $S('address_primary') ?></textarea></label>
-  <label>Secondary address (optional)<textarea name="address_secondary" rows="2"><?= $S('address_secondary') ?></textarea></label>
+  <label>WhatsApp greeting <small>(starts every WhatsApp message from the website)</small><textarea name="wa_greeting" rows="2"><?= $S('wa_greeting') ?></textarea></label>
+  <label>Primary address — Mandya <small>(first line = name, last line is shown in the top bar)</small><textarea name="address_primary" rows="3"><?= $S('address_primary') ?></textarea></label>
+  <label>Secondary address — Pandavapura (optional)<textarea name="address_secondary" rows="2"><?= $S('address_secondary') ?></textarea></label>
 
   <h2>Pricing (₹ per sq.ft)</h2>
   <div class="g3">
-    <label>Essential — starting rate<input name="price_essential" inputmode="numeric" value="<?= $S('price_essential') ?>"></label>
-    <label>Classic<input name="price_classic" inputmode="numeric" value="<?= $S('price_classic') ?>"></label>
-    <label>Signature<input name="price_signature" inputmode="numeric" value="<?= $S('price_signature') ?>"></label>
+    <label>Economy — offer rate<input name="price_essential" inputmode="numeric" value="<?= $S('price_essential') ?>"></label>
+    <label>Standard — offer rate<input name="price_classic" inputmode="numeric" value="<?= $S('price_classic') ?>"></label>
+    <label>Premium — offer rate<input name="price_signature" inputmode="numeric" value="<?= $S('price_signature') ?>"></label>
+    <label>Economy — regular rate <small>(shown struck out; blank or 0 hides it)</small><input name="mrp_essential" inputmode="numeric" value="<?= $S('mrp_essential') ?>"></label>
+    <label>Standard — regular rate<input name="mrp_classic" inputmode="numeric" value="<?= $S('mrp_classic') ?>"></label>
+    <label>Premium — regular rate<input name="mrp_signature" inputmode="numeric" value="<?= $S('mrp_signature') ?>"></label>
+  </div>
+
+  <h2>Portfolio numbers <small>(shown on Home, About and Gallery pages)</small></h2>
+  <div class="g3">
+    <label>Completed homes<input name="count_completed" inputmode="numeric" value="<?= $S('count_completed') ?>"></label>
+    <label>3D designs<input name="count_designs" inputmode="numeric" value="<?= $S('count_designs') ?>"></label>
+    <label>Inspected sites<input name="count_inspected" inputmode="numeric" value="<?= $S('count_inspected') ?>"></label>
   </div>
 
   <h2>Founder profile <small>(About page)</small></h2>
@@ -63,7 +76,7 @@ admin_head('Settings', 'settings');
 
   <h2>Designer profile <small>(On-site engineering section)</small></h2>
   <div class="g2">
-    <label>Name<input name="designer_name" value="<?= $S('designer_name') ?>"></label>
+    <label>Name (leave blank to hide)<input name="designer_name" value="<?= $S('designer_name') ?>"></label>
     <label>Role<input name="designer_role" value="<?= $S('designer_role') ?>"></label>
   </div>
   <label>About the designer<textarea name="designer_bio" rows="5"><?= $S('designer_bio') ?></textarea></label>
