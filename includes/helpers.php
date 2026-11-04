@@ -60,13 +60,16 @@ function require_admin(): void
 }
 
 function phone_href(): string { return 'tel:' . preg_replace('/[^\d+]/', '', setting('phone')); }
-/** Main phone first, then the extra numbers from Settings (comma or slash separated). */
+/** Main phone first, then the extra numbers from Settings (comma or slash separated); a number listed twice is shown once. */
 function phone_numbers(): array
 {
-    $out = [];
+    $out = []; $seen = [];
     foreach (array_merge([setting('phone')], preg_split('#[,/\n]+#', setting('phone_alt'))) as $n) {
         $n = trim($n);
-        if ($n !== '') $out[] = ['label' => $n, 'href' => 'tel:' . preg_replace('/[^\d+]/', '', $n)];
+        $key = substr(preg_replace('/\D/', '', $n), -10);   // last 10 digits, so "+91 80731 44110" and "8073144110" match
+        if ($n === '' || isset($seen[$key])) continue;
+        $seen[$key] = true;
+        $out[] = ['label' => $n, 'href' => 'tel:' . preg_replace('/[^\d+]/', '', $n)];
     }
     return $out;
 }
