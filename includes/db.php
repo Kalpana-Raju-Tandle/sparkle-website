@@ -129,6 +129,12 @@ function migrate(PDO $pdo, bool $fresh): void
         $pdo->exec("INSERT INTO settings (k, v) VALUES ('journey_v5', '1')");
     }
 
+    // One-off: a 3D render ("Bhanumathi final FR") was uploaded into the site-photo journey by mistake.
+    if (!$pdo->query("SELECT 1 FROM settings WHERE k = 'journey_v6'")->fetchColumn()) {
+        $pdo->exec("DELETE FROM gallery WHERE category = 'journey' AND title LIKE 'bhanumathi final%'");
+        $pdo->exec("INSERT INTO settings (k, v) VALUES ('journey_v6', '1')");
+    }
+
     // First admin. Password is forced-change nagged until changed in Settings.
     if (!(int)$pdo->query('SELECT COUNT(*) FROM admins')->fetchColumn()) {
         $pdo->prepare('INSERT INTO admins (username, password_hash) VALUES (?, ?)')
