@@ -115,6 +115,13 @@ function migrate(PDO $pdo, bool $fresh): void
         $pdo->exec("INSERT INTO settings (k, v) VALUES ('journey_v2', '1')");
     }
 
+    // One-off: the original site photos take their stage's name (stages 1–2 keep their own titles).
+    if (!$pdo->query("SELECT 1 FROM settings WHERE k = 'journey_v3'")->fetchColumn()) {
+        $up = $pdo->prepare("UPDATE gallery SET title = ? WHERE category = 'journey' AND stage = ? AND file LIKE 'j-%'");
+        foreach (STAGES as $n => $name) if ($n > 2) $up->execute([$name, $n]);
+        $pdo->exec("INSERT INTO settings (k, v) VALUES ('journey_v3', '1')");
+    }
+
     // First admin. Password is forced-change nagged until changed in Settings.
     if (!(int)$pdo->query('SELECT COUNT(*) FROM admins')->fetchColumn()) {
         $pdo->prepare('INSERT INTO admins (username, password_hash) VALUES (?, ?)')
