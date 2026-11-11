@@ -25,15 +25,7 @@
   }
   .icon { width:84px; height:84px; margin:0 auto 24px; }
   .brand { font-size:13px; letter-spacing:.22em; text-transform:uppercase; color:var(--bronze); font-weight:600; margin-bottom:12px; }
-  h1 { font-size:clamp(26px, 6vw, 34px); color:var(--ink); line-height:1.2; margin-bottom:14px; }
-  p { font-size:16px; line-height:1.65; color:var(--muted); }
-  .bar { height:8px; background:#f4ead9; border-radius:99px; overflow:hidden; margin:30px auto 10px; max-width:320px; }
-  .bar span { display:block; height:100%; width:40%; border-radius:99px;
-    background: repeating-linear-gradient(45deg, var(--orange) 0 12px, var(--amber) 12px 24px);
-    animation: slide 1.6s linear infinite alternate; }
-  .small { font-size:13px; color:#9a928b; }
-  @keyframes slide { from { transform:translateX(-10%); } to { transform:translateX(160%); } }
-  @media (prefers-reduced-motion: reduce) { .bar span { animation:none; width:60%; } }
+  h1 { font-size:clamp(26px, 6vw, 34px); color:var(--ink); line-height:1.2; }
 </style>
 </head>
 <body>
@@ -48,9 +40,6 @@
     </svg>
     <div class="brand">Sparkle Constructions</div>
     <h1>Website Under Construction</h1>
-    <p>We're building something great. Our new website is currently a work in progress and will be available soon.</p>
-    <div class="bar" role="presentation"><span></span></div>
-    <p class="small">Thank you for your patience.</p>
   </main>
 </body>
 </html>
