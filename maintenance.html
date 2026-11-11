@@ -1,0 +1,56 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>Sparkle Constructions — Coming Soon</title>
+<style>
+  :root { --ink:#2e2e2e; --text:#4a4542; --muted:#6b6560; --cream:#fff6e6; --line:#eadfce; --orange:#f28a1e; --amber:#ffb21e; --bronze:#96642a; }
+  * { box-sizing:border-box; margin:0; padding:0; }
+  html, body { height:100%; }
+  body {
+    font-family: "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    background: var(--cream);
+    background-image: radial-gradient(circle at 20% 15%, #fdebc8 0, transparent 45%), radial-gradient(circle at 85% 90%, #fde3c0 0, transparent 40%);
+    color: var(--text);
+    display:flex; align-items:center; justify-content:center;
+    padding: 24px 16px;
+  }
+  .card {
+    width:100%; max-width:560px; text-align:center;
+    background:#fff; border:1px solid var(--line); border-radius:20px;
+    padding: 48px 32px 40px;
+    box-shadow: 0 20px 50px -25px rgba(90,63,43,.35);
+  }
+  .icon { width:84px; height:84px; margin:0 auto 24px; }
+  .brand { font-size:13px; letter-spacing:.22em; text-transform:uppercase; color:var(--bronze); font-weight:600; margin-bottom:12px; }
+  h1 { font-size:clamp(26px, 6vw, 34px); color:var(--ink); line-height:1.2; margin-bottom:14px; }
+  p { font-size:16px; line-height:1.65; color:var(--muted); }
+  .bar { height:8px; background:#f4ead9; border-radius:99px; overflow:hidden; margin:30px auto 10px; max-width:320px; }
+  .bar span { display:block; height:100%; width:40%; border-radius:99px;
+    background: repeating-linear-gradient(45deg, var(--orange) 0 12px, var(--amber) 12px 24px);
+    animation: slide 1.6s linear infinite alternate; }
+  .small { font-size:13px; color:#9a928b; }
+  @keyframes slide { from { transform:translateX(-10%); } to { transform:translateX(160%); } }
+  @media (prefers-reduced-motion: reduce) { .bar span { animation:none; width:60%; } }
+</style>
+</head>
+<body>
+  <main class="card">
+    <svg class="icon" viewBox="0 0 64 64" aria-hidden="true">
+      <circle cx="32" cy="32" r="31" fill="#fff6e6" stroke="#eadfce"/>
+      <path d="M14 44h36v4H14z" fill="#96642a"/>
+      <path d="M20 44V30l12-9 12 9v14" fill="none" stroke="#2e2e2e" stroke-width="3" stroke-linejoin="round"/>
+      <path d="M28 44v-8h8v8" fill="none" stroke="#2e2e2e" stroke-width="3" stroke-linejoin="round"/>
+      <path d="M16 18h20M26 18v8" stroke="#f28a1e" stroke-width="3" stroke-linecap="round"/>
+      <path d="M36 18l-2 4h4z" fill="#f28a1e"/>
+    </svg>
+    <div class="brand">Sparkle Constructions</div>
+    <h1>Website Under Construction</h1>
+    <p>We're building something great. Our new website is currently a work in progress and will be available soon.</p>
+    <div class="bar" role="presentation"><span></span></div>
+    <p class="small">Thank you for your patience.</p>
+  </main>
+</body>
+</html>

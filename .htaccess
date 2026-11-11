@@ -7,6 +7,16 @@ RedirectMatch 404 /\.git
   Require all denied
 </FilesMatch>
 
+# Maintenance mode: while the file ".maintenance" exists in this folder, every page shows maintenance.html (503).
+# To put the full site back online, delete ".maintenance" (and push, or delete it in Hostinger File Manager).
+ErrorDocument 503 /maintenance.html
+<IfModule mod_rewrite.c>
+  RewriteEngine On
+  RewriteCond %{DOCUMENT_ROOT}/.maintenance -f
+  RewriteCond %{REQUEST_URI} !^/maintenance\.html$
+  RewriteRule ^ - [R=503,L]
+</IfModule>
+
 # Clean page addresses: /about serves about.php, /admin/login serves admin/login.php; old .php links redirect (GET only)
 <IfModule mod_rewrite.c>
   RewriteEngine On
